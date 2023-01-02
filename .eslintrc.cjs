@@ -25,6 +25,14 @@ module.exports = {
         "prettier"
     ],
     "rules": {
-        "react/react-in-jsx-scope": 0
+        "react/react-in-jsx-scope": 0,
+        "react/function-component-definition": [
+            0,
+            {
+                namedComponents: "arrow-function",
+                unnamedComponents: "arrow-function",
+            },
+        ],
+        "no-restricted-exports": 0,
     }
 }
