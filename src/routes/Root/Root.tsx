@@ -1,13 +1,17 @@
+import { Flex } from '@chakra-ui/react';
 import { Outlet } from 'react-router-dom';
 
+import Menu from '../../components/Menu';
+
 const Root = () => (
-    <>
-        <ul>
-            <li>Menu item 1</li>
-            <li>Menu item 2</li>
-        </ul>
-        <Outlet />
-    </>
+    <Flex direction="column" h="100vh" bgColor="white">
+        <Flex as="nav" h="10vh" bgColor="blue.600">
+            <Menu />
+        </Flex>
+        <Flex h="90vh" m="5vh auto" direction="column">
+            <Outlet />
+        </Flex>
+    </Flex>
 );
 
 export default Root;
