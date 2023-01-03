@@ -34,5 +34,6 @@ module.exports = {
             },
         ],
         "no-restricted-exports": 0,
+        "import/prefer-default-export": "off",
     }
 }
