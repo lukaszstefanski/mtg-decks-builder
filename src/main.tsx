@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 
@@ -11,6 +12,7 @@ import FavouriteCards from './routes/FavouriteCards';
 import Decks from './routes/Decks';
 import Error from './routes/Error';
 import { Routes } from './constants/routes';
+import { store } from './redux/store';
 
 const router = createBrowserRouter([
     {
@@ -32,8 +34,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
-        <ChakraProvider>
-            <RouterProvider router={router} />
-        </ChakraProvider>
+        <Provider store={store}>
+            <ChakraProvider>
+                <RouterProvider router={router} />
+            </ChakraProvider>
+        </Provider>
     </React.StrictMode>
 );
