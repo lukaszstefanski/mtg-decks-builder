@@ -12,6 +12,10 @@ module.exports = {
         "plugin:prettier/recommended"
     ],
     "overrides": [
+        {
+            files: ['src/redux/slices/*.ts'],
+            rules: { 'no-param-reassign': ['error', { props: false }] },
+        },
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {

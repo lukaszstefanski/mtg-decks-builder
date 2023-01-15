@@ -8,7 +8,7 @@ const Root = () => (
         <Flex as="nav" h="10vh" bgColor="blue.600">
             <Menu />
         </Flex>
-        <Flex h="90vh" m="5vh auto" direction="column">
+        <Flex h="90vh" w="90vw" m="5vh auto" direction="row">
             <Outlet />
         </Flex>
     </Flex>
