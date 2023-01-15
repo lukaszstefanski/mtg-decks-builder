@@ -11,8 +11,9 @@ export const cardsApi = createApi({
         baseUrl: 'https://api.magicthegathering.io/v1/',
     }),
     endpoints: (builder) => ({
-        getAllCards: builder.query<Cards, void>({
-            query: () => 'cards?pageSize=10&gameFormat=standard',
+        getAllCards: builder.query<Cards, number>({
+            query: (page) =>
+                `cards?page=${page}&pageSize=10&gameFormat=standard`,
         }),
     }),
 });
