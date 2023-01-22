@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Card } from '../../types/card';
+import { CardI, FiltersI } from '../../types';
 
-interface Cards {
-    cards: Card[] | [];
+interface ResponseI {
+    cards: CardI[] | [];
 }
 
 export const cardsApi = createApi({
@@ -11,11 +11,16 @@ export const cardsApi = createApi({
         baseUrl: 'https://api.magicthegathering.io/v1/',
     }),
     endpoints: (builder) => ({
-        getAllCards: builder.query<Cards, number>({
-            query: (page) =>
-                `cards?page=${page}&pageSize=10&gameFormat=standard`,
+        getCards: builder.query<ResponseI, FiltersI>({
+            query: (params) => {
+                return {
+                    url: `cards?gameFormat=standard&pageSize=20`,
+                    method: 'GET',
+                    params,
+                };
+            },
         }),
     }),
 });
 
-export const { useGetAllCardsQuery } = cardsApi;
+export const { useGetCardsQuery } = cardsApi;

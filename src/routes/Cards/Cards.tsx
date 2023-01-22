@@ -1,41 +1,38 @@
 import { useState } from 'react';
-import { useGetAllCardsQuery } from '../../redux/api/cards';
+import { SubmitHandler } from 'react-hook-form';
+import { Box } from '@chakra-ui/react';
+import Filters from '../../components/Filters';
+import CardsList from '../../components/CardsList';
+import { FiltersI } from '../../types';
 
 const Cards = () => {
-    const [page, setPage] = useState<number>(1);
-    const { data, error, isLoading } = useGetAllCardsQuery(page);
+    const [filters, setFilters] = useState<FiltersI>({});
 
-    if (error) {
-        return <div>Error during data fetch</div>;
-    }
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-    if (data && data.cards.length > 0) {
-        return (
-            <>
-                <button
-                    type="button"
-                    disabled={page === 1}
-                    onClick={() => setPage((prevState) => prevState - 1)}
-                >
-                    Previous
-                </button>
-                {data.cards.map(({ id, name, imageUrl }) => (
-                    <div key={id}>
-                        <img src={imageUrl} alt={name} />
-                    </div>
-                ))}
-                <button
-                    type="button"
-                    onClick={() => setPage((prevState) => prevState + 1)}
-                >
-                    Next
-                </button>
-            </>
-        );
-    }
-    return <div>No data</div>;
+    const submitForm: SubmitHandler<FiltersI> = ({
+        name,
+        colorIdentity,
+        type,
+    }) => {
+        // @TODO Create validation schema mapper
+        let mappedFilters = {};
+        if (name !== '') {
+            mappedFilters = { ...mappedFilters, name };
+        }
+        if (colorIdentity && colorIdentity.length > 0) {
+            mappedFilters = { ...mappedFilters, colorIdentity };
+        }
+        if (type !== '' && type !== '--') {
+            mappedFilters = { ...mappedFilters, type };
+        }
+        setFilters(mappedFilters);
+    };
+
+    return (
+        <Box w="60vw">
+            <Filters submitForm={submitForm} />
+            <CardsList filters={filters} />
+        </Box>
+    );
 };
 
 export default Cards;
