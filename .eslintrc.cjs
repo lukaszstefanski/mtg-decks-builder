@@ -11,12 +11,7 @@ module.exports = {
         "plugin:@typescript-eslint/recommended",
         "plugin:prettier/recommended"
     ],
-    "overrides": [
-        {
-            files: ['src/redux/slices/*.ts'],
-            rules: { 'no-param-reassign': ['error', { props: false }] },
-        },
-    ],
+    "overrides": [],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": "latest",
@@ -38,6 +33,8 @@ module.exports = {
             },
         ],
         "no-restricted-exports": 0,
-        "import/prefer-default-export": "off",
+        "no-param-reassig": 0,
+        "import/prefer-default-export": 0,
+        "react/jsx-props-no-spreading": 0
     }
 }

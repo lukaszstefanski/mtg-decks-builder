@@ -1,13 +1,13 @@
 import { useRouteError } from 'react-router-dom';
 
-type ErrorResponse = {
+interface ErrorResponseI {
     status: number;
     statusText?: string;
     message?: string;
-};
+}
 
 const Error = () => {
-    const error = useRouteError() as ErrorResponse;
+    const error = useRouteError() as ErrorResponseI;
 
     return (
         <p>

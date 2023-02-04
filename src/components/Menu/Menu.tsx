@@ -1,14 +1,14 @@
 import { NavLink } from 'react-router-dom';
 import { Center, Flex, Text } from '@chakra-ui/react';
+import { Routes } from '../../types/routes';
 
-import { Routes } from '../../constants/routes';
-
-interface MenuItemI {
+interface PropsI {
     route: string;
     label: string;
 }
 
-const MenuItem = ({ route, label }: MenuItemI) => (
+// @TODO Move MenuItem component to new directory
+const MenuItem = ({ route, label }: PropsI) => (
     <Center>
         <NavLink to={route}>
             {({ isActive }) => (
