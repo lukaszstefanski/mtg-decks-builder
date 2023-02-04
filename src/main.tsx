@@ -10,7 +10,7 @@ import Card from './routes/Card';
 import FavouriteCards from './routes/FavouriteCards';
 import Decks from './routes/Decks';
 import Error from './routes/Error';
-import { Routes } from './constants/routes';
+import { Routes } from './types/routes';
 import { store } from './redux/store';
 
 const router = createBrowserRouter([

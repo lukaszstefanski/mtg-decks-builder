@@ -1,21 +1,15 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
-import {
-    Box,
-    Flex,
-    Input,
-    Stack,
-    Checkbox,
-    Select,
-    Button,
-} from '@chakra-ui/react';
-import { useGetTypesQuery } from '../../redux/api/types';
+import { Box, Flex, Button } from '@chakra-ui/react';
+import CardNameInput from '../CardNameInput';
+import CardTypesSelect from '../CardTypesSelect';
+import CardColorsCheckboxGroup from '../CardColorsCheckboxGroup';
 import { FiltersI } from '../../types';
 
 interface PropsI {
-    submitForm: (userFilters: FiltersI) => void;
+    setFilters: (userFilters: FiltersI) => void;
 }
 
-const Filters = ({ submitForm }: PropsI) => {
+const Filters = ({ setFilters }: PropsI) => {
     // @TODO Handle error during fetching types
     const {
         register,
@@ -23,10 +17,17 @@ const Filters = ({ submitForm }: PropsI) => {
         formState: { errors },
     } = useForm<FiltersI>();
 
-    const { data, isLoading } = useGetTypesQuery();
-
-    const submit: SubmitHandler<FiltersI> = (userFilters) => {
-        submitForm(userFilters);
+    const submitForm: SubmitHandler<FiltersI> = ({
+        name,
+        colorIdentity,
+        type,
+    }) => {
+        const mappedFilters = {} as FiltersI;
+        if (name) mappedFilters.name = name;
+        if (colorIdentity && colorIdentity.length > 0)
+            mappedFilters.colorIdentity = colorIdentity;
+        if (type) mappedFilters.type = type;
+        setFilters(mappedFilters);
     };
 
     return (
@@ -37,49 +38,12 @@ const Filters = ({ submitForm }: PropsI) => {
             borderColor="blue.600"
             borderRadius="10px"
         >
-            <form onSubmit={handleSubmit(submit)}>
+            <form onSubmit={handleSubmit(submitForm)}>
                 <Flex direction="row">
-                    <Input
-                        placeholder="Name"
-                        {...register('name')}
-                        m="0 10px"
-                    />
-                    {isLoading ? (
-                        <Select placeholder="Card type" isDisabled m="0 10px" />
-                    ) : (
-                        <Select
-                            placeholder="Card type"
-                            {...register('type')}
-                            m="0 10px"
-                        >
-                            {data &&
-                                data.types
-                                    .filter((type) => type !== '--')
-                                    .map((type) => (
-                                        <option key={type} value={type}>
-                                            {type}
-                                        </option>
-                                    ))}
-                        </Select>
-                    )}
-                    <Stack direction="row" spacing="1">
-                        <Checkbox value="U" {...register('colorIdentity')}>
-                            Blue
-                        </Checkbox>
-                        <Checkbox value="R" {...register('colorIdentity')}>
-                            Red
-                        </Checkbox>
-                        <Checkbox value="B" {...register('colorIdentity')}>
-                            Black
-                        </Checkbox>
-                        <Checkbox value="G" {...register('colorIdentity')}>
-                            Green
-                        </Checkbox>
-                        <Checkbox value="W" {...register('colorIdentity')}>
-                            White
-                        </Checkbox>
-                    </Stack>
-                    <Button colorScheme="blue" type="submit" w="20%" m="0 10px">
+                    <CardNameInput register={register} />
+                    <CardTypesSelect register={register} />
+                    <CardColorsCheckboxGroup register={register} />
+                    <Button type="submit" w="20%" m="0 10px" colorScheme="blue">
                         Search
                     </Button>
                 </Flex>

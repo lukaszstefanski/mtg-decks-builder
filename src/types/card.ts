@@ -1,4 +1,10 @@
-export type Colors = 'W' | 'B' | 'U' | 'R' | 'G';
+export enum Colors {
+    White = 'W',
+    Black = 'B',
+    Blue = 'U',
+    Red = 'R',
+    Green = 'G',
+}
 
 export type Rarity = 'Common' | 'Uncommon' | 'Rare' | 'Mythic Rare';
 

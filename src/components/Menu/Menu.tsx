@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { Center, Flex, Text } from '@chakra-ui/react';
-import { Routes } from '../../constants/routes';
+import { Routes } from '../../types/routes';
 
 interface PropsI {
     route: string;

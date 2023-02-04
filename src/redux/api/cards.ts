@@ -14,9 +14,13 @@ export const cardsApi = createApi({
         getCards: builder.query<ResponseI, FiltersI>({
             query: (params) => {
                 return {
-                    url: `cards?gameFormat=standard&pageSize=20`,
+                    url: `cards`,
                     method: 'GET',
-                    params,
+                    params: {
+                        gameFormat: 'standard',
+                        pageSize: 20,
+                        ...params,
+                    },
                 };
             },
         }),

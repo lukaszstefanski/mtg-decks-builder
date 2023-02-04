@@ -10,7 +10,7 @@ interface PropsI {
 
 const CardsList = ({ filters }: PropsI) => {
     const [page, setPage] = useState<number>(1);
-    const { data, error, isLoading } = useGetCardsQuery({
+    const { data, error, isLoading, isFetching } = useGetCardsQuery({
         page,
         ...filters,
     });
@@ -18,7 +18,8 @@ const CardsList = ({ filters }: PropsI) => {
     if (error) {
         return <div>Error during data fetch</div>;
     }
-    if (isLoading) {
+
+    if (isLoading || isFetching) {
         return (
             <Flex h="60vh" justify="center" align="center">
                 <Spinner
@@ -32,7 +33,7 @@ const CardsList = ({ filters }: PropsI) => {
         );
     }
 
-    if (data) {
+    if (data && data.cards.length > 0) {
         return (
             <>
                 <Grid templateColumns="repeat(5, 1fr)" gap={2}>
@@ -65,7 +66,11 @@ const CardsList = ({ filters }: PropsI) => {
         );
     }
 
-    return <div>No data</div>;
+    return (
+        <Flex h="60vh" justify="center" align="center">
+            No cards were found. Perhaps you should change filters.
+        </Flex>
+    );
 };
 
 export default CardsList;
