@@ -124,6 +124,6 @@ The application will be available at `http://localhost:4321`
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 **Note**: This project is currently in active development. Some features may not be fully implemented or may change during the MVP phase.
