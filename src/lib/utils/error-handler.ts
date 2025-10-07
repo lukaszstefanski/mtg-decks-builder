@@ -1,4 +1,4 @@
-import type { ApiErrorResponse, ValidationErrorResponse } from "../schemas/deck.schemas";
+import type { ApiErrorResponse, ValidationErrorResponse } from "../../types";
 
 /**
  * Custom error classes for better error handling
@@ -207,4 +207,28 @@ export class RateLimitError extends ApiError {
       (this as any).retryAfter = retryAfter;
     }
   }
+}
+
+/**
+ * Create standardized error response for API endpoints
+ */
+export function createErrorResponse(
+  status: number,
+  error: string,
+  message: string,
+  additionalData?: Record<string, any>
+): Response {
+  const errorResponse: ApiErrorResponse | ValidationErrorResponse = {
+    error,
+    message,
+    status,
+    ...additionalData
+  };
+
+  return new Response(JSON.stringify(errorResponse), {
+    status,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
 }
