@@ -45,7 +45,10 @@ export class DeckCardService {
     }
 
     // Pobierz całkowitą liczbę rekordów dla paginacji
-    const { count } = await query.select("*", { count: "exact", head: true });
+    const { count } = await this.supabase
+      .from("deck_cards")
+      .select("*", { count: "exact", head: true })
+      .eq("deck_id", deckId);
     const total = count || 0;
 
     // Pobierz dane z paginacją

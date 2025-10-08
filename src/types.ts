@@ -301,3 +301,160 @@ export interface PaginatedApiResponse<T> {
   success: boolean;
   message?: string;
 }
+
+// ============================================================================
+// DASHBOARD VIEW TYPES
+// ============================================================================
+
+/**
+ * Deck view model with UI state
+ */
+export interface DeckViewModel extends DeckResponse {
+  isEditing?: boolean;
+  isDeleting?: boolean;
+  lastAction?: "created" | "updated" | "deleted";
+}
+
+/**
+ * Deck list state for dashboard
+ */
+export interface DeckListState {
+  decks: DeckViewModel[];
+  loading: boolean;
+  error: string | null;
+  pagination: PaginationInfo;
+  searchQuery: string;
+  filters: FilterOptions;
+  sort: SortOptions;
+}
+
+/**
+ * Deck search state
+ */
+export interface DeckSearchState {
+  query: string;
+  isSearching: boolean;
+  suggestions: string[];
+}
+
+/**
+ * Deck filters state
+ */
+export interface DeckFiltersState {
+  format: string | null;
+  sortBy: "created_at" | "last_modified" | "name";
+  sortOrder: "asc" | "desc";
+}
+
+/**
+ * Deck actions state
+ */
+export interface DeckActionsState {
+  editingDeckId: string | null;
+  deletingDeckId: string | null;
+  actionLoading: boolean;
+}
+
+/**
+ * Filter options for deck list
+ */
+export interface FilterOptions {
+  format?: string;
+  search?: string;
+  sortBy?: "created_at" | "last_modified" | "name";
+  sortOrder?: "asc" | "desc";
+}
+
+/**
+ * Sort options for deck list
+ */
+export interface SortOptions {
+  field: "created_at" | "last_modified" | "name";
+  direction: "asc" | "desc";
+}
+
+/**
+ * Search query parameters
+ */
+export interface SearchQuery {
+  query: string;
+  debounced: boolean;
+}
+
+/**
+ * Empty state props
+ */
+export interface EmptyStateProps {
+  onCreateDeck: () => void;
+  message?: string;
+}
+
+// ============================================================================
+// DECK EDITOR VIEW TYPES
+// ============================================================================
+
+/**
+ * Stan wyszukiwania kart
+ */
+export interface CardSearchState {
+  query: string;
+  filters: FilterState;
+  results: CardResponse[];
+  loading: boolean;
+  error: string | null;
+  pagination: PaginationInfo;
+}
+
+/**
+ * Stan filtrów
+ */
+export interface FilterState {
+  colors: string[];
+  manaCost: {
+    exact?: number;
+    min?: number;
+    max?: number;
+    isX?: boolean;
+  };
+  types: string[];
+}
+
+/**
+ * Stan decka
+ */
+export interface DeckState {
+  cards: DeckCardResponse[];
+  totalCount: number;
+  loading: boolean;
+  error: string | null;
+}
+
+/**
+ * Metadane decka
+ */
+export interface DeckMetadata {
+  id: string;
+  name: string;
+  format: string;
+  description?: string;
+}
+
+/**
+ * Rozszerzenie CardSearchParams o dodatkowe filtry
+ */
+export interface ExtendedCardSearchParams extends CardSearchParams {
+  colors?: string[];
+  mana_cost?: string;
+  type?: string[];
+  rarity?: string[];
+  set?: string;
+}
+
+/**
+ * Rozszerzenie DeckCardResponse o dodatkowe pola
+ */
+export interface ExtendedDeckCardResponse extends DeckCardResponse {
+  isLand: boolean;
+  canAddMore: boolean;
+  currentCount: number;
+}

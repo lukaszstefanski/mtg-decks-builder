@@ -1,0 +1,15 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { DeckEditor } from "../../../components/deck-editor";
+
+// Pobieranie deckId z parametrów URL
+const { deckId } = Astro.params;
+
+if (!deckId) {
+  throw new Error("Brak identyfikatora decka w URL");
+}
+---
+
+<Layout title="Edytor Decku - MTG Decks Builder">
+  <DeckEditor deckId={deckId} client:load />
+</Layout>
