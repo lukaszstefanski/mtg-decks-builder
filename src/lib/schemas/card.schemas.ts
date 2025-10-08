@@ -83,8 +83,8 @@ export const CreateCardSchema = z.object({
   name: z.string().min(1, "Card name is required").max(200, "Card name too long"),
   mana_cost: z.string().max(20, "Mana cost too long").nullable().optional(),
   type: z.string().min(1, "Card type is required").max(100, "Card type too long"),
-  rarity: z.enum(["common", "uncommon", "rare", "mythic"], {
-    errorMap: () => ({ message: "Invalid rarity. Use common, uncommon, rare, or mythic" }),
+  rarity: z.enum(["common", "uncommon", "rare", "special", "mythic"], {
+    errorMap: () => ({ message: "Invalid rarity. Use common, uncommon, rare, special, or mythic" }),
   }),
   image_url: z.string().url("Invalid image URL").nullable().optional(),
 });
@@ -98,8 +98,8 @@ export const UpdateCardSchema = z
     mana_cost: z.string().max(20, "Mana cost too long").nullable().optional(),
     type: z.string().min(1, "Card type is required").max(100, "Card type too long").optional(),
     rarity: z
-      .enum(["common", "uncommon", "rare", "mythic"], {
-        errorMap: () => ({ message: "Invalid rarity. Use common, uncommon, rare, or mythic" }),
+      .enum(["common", "uncommon", "rare", "special", "mythic"], {
+        errorMap: () => ({ message: "Invalid rarity. Use common, uncommon, rare, special or mythic" }),
       })
       .optional(),
     image_url: z.string().url("Invalid image URL").nullable().optional(),
