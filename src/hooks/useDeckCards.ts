@@ -10,7 +10,6 @@ import type {
   CardResponse,
   AddCardToDeckRequest,
   UpdateDeckCardRequest,
-  DeckCardResponse,
   ScryfallCardResponse,
 } from "../types";
 
@@ -128,8 +127,9 @@ export const useDeckCards = (deckId: string) => {
 
         setState((prev) => ({
           ...prev,
-          cards: prev.cards.map((card) => (card.id === updatedCard.id ? updatedCard : card)),
-          totalCount: prev.totalCount + (data.quantity || 0) - (prev.cards.find((c) => c.id === cardId)?.quantity || 0),
+          cards: prev.cards.map((card) => (card.card_id === updatedCard.card_id ? updatedCard : card)),
+          totalCount:
+            prev.totalCount + (data.quantity || 0) - (prev.cards.find((c) => c.card_id === cardId)?.quantity || 0),
           loading: false,
         }));
 
@@ -155,7 +155,8 @@ export const useDeckCards = (deckId: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
 
-        const cardToRemove = state.cards.find((card) => card.id === cardId);
+        // Znajdź kartę do usunięcia w aktualnym stanie
+        const cardToRemove = state.cards.find((card) => card.card_id === cardId);
         if (!cardToRemove) {
           throw new Error("Karta nie została znaleziona w decku");
         }
@@ -164,7 +165,7 @@ export const useDeckCards = (deckId: string) => {
 
         setState((prev) => ({
           ...prev,
-          cards: prev.cards.filter((card) => card.id !== cardId),
+          cards: prev.cards.filter((card) => card.card_id !== cardId),
           totalCount: prev.totalCount - cardToRemove.quantity,
           loading: false,
         }));
@@ -178,7 +179,7 @@ export const useDeckCards = (deckId: string) => {
         throw error;
       }
     },
-    [deckId]
+    [deckId, state.cards]
   );
 
   /**

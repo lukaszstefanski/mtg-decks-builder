@@ -37,13 +37,13 @@ export const DeckCardItem: React.FC<DeckCardItemProps> = ({ card, onUpdate, onRe
   // Obsługa zapisywania zmian
   const handleSave = useCallback(() => {
     if (quantity !== card.quantity || notes !== (card.notes || "")) {
-      onUpdate(card.id, {
+      onUpdate(card.card_id, {
         quantity,
         notes: notes.trim() || undefined,
       });
     }
     setIsEditing(false);
-  }, [card.id, card.quantity, card.notes, quantity, notes, onUpdate]);
+  }, [card.card_id, card.quantity, card.notes, quantity, notes, onUpdate]);
 
   // Obsługa anulowania edycji
   const handleCancel = useCallback(() => {
@@ -55,9 +55,9 @@ export const DeckCardItem: React.FC<DeckCardItemProps> = ({ card, onUpdate, onRe
   // Obsługa usuwania karty
   const handleRemove = useCallback(() => {
     if (window.confirm(`Czy na pewno chcesz usunąć "${card.card.name}" z decka?`)) {
-      onRemove(card.id);
+      onRemove(card.card_id);
     }
-  }, [card.id, card.card.name, onRemove]);
+  }, [card.card_id, card.card.name, onRemove]);
 
   // Formatowanie kosztu many
   const formatManaCost = (manaCost: string) => {
