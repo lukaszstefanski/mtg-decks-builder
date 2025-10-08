@@ -168,7 +168,7 @@ export class DeckEditorService {
    */
   private async findCardByScryfallId(scryfallId: string): Promise<any> {
     try {
-      const response = await fetch(`${this.baseUrl}/cards/scryfall/${scryfallId}`);
+      const response = await fetch(`${this.baseUrl}/cards?scryfall_id=${encodeURIComponent(scryfallId)}`);
 
       if (response.ok) {
         return await response.json();

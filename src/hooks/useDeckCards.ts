@@ -63,12 +63,31 @@ export const useDeckCards = (deckId: string) => {
 
         const newDeckCard = await deckEditorService.addCardToDeck(deckId, addCardData);
 
-        setState((prev) => ({
-          ...prev,
-          cards: [...prev.cards, newDeckCard],
-          totalCount: prev.totalCount + quantity,
-          loading: false,
-        }));
+        setState((prev) => {
+          // Sprawdź czy karta już istnieje w decku
+          const existingCardIndex = prev.cards.findIndex(deckCard => deckCard.card_id === newDeckCard.card_id);
+          
+          if (existingCardIndex >= 0) {
+            // Karta już istnieje - aktualizuj ją
+            const updatedCards = [...prev.cards];
+            updatedCards[existingCardIndex] = newDeckCard;
+            
+            return {
+              ...prev,
+              cards: updatedCards,
+              totalCount: prev.totalCount + quantity,
+              loading: false,
+            };
+          } else {
+            // Nowa karta - dodaj do listy
+            return {
+              ...prev,
+              cards: [...prev.cards, newDeckCard],
+              totalCount: prev.totalCount + quantity,
+              loading: false,
+            };
+          }
+        });
 
         return newDeckCard;
       } catch (error) {
@@ -94,12 +113,31 @@ export const useDeckCards = (deckId: string) => {
 
         const newDeckCard = await deckEditorService.addScryfallCardToDeck(deckId, card, quantity, notes);
 
-        setState((prev) => ({
-          ...prev,
-          cards: [...prev.cards, newDeckCard],
-          totalCount: prev.totalCount + quantity,
-          loading: false,
-        }));
+        setState((prev) => {
+          // Sprawdź czy karta już istnieje w decku
+          const existingCardIndex = prev.cards.findIndex(deckCard => deckCard.card_id === newDeckCard.card_id);
+          
+          if (existingCardIndex >= 0) {
+            // Karta już istnieje - aktualizuj ją
+            const updatedCards = [...prev.cards];
+            updatedCards[existingCardIndex] = newDeckCard;
+            
+            return {
+              ...prev,
+              cards: updatedCards,
+              totalCount: prev.totalCount + quantity,
+              loading: false,
+            };
+          } else {
+            // Nowa karta - dodaj do listy
+            return {
+              ...prev,
+              cards: [...prev.cards, newDeckCard],
+              totalCount: prev.totalCount + quantity,
+              loading: false,
+            };
+          }
+        });
 
         return newDeckCard;
       } catch (error) {

@@ -115,7 +115,62 @@ export class DeckCardService {
     }
 
     if (existingCard) {
-      throw new Error("Card already exists in this deck section");
+      // Karta już istnieje - aktualizuj ilość
+      const newQuantity = existingCard.quantity + (cardData.quantity || 1);
+      const { data: updatedCard, error: updateError } = await this.supabase
+        .from("deck_cards")
+        .update({ quantity: newQuantity })
+        .eq("id", existingCard.id)
+        .select(
+          `
+          id,
+          deck_id,
+          card_id,
+          quantity,
+          is_sideboard,
+          notes,
+          added_at
+        `
+        )
+        .single();
+
+      if (updateError) {
+        throw new Error(`Failed to update card quantity: ${updateError.message}`);
+      }
+
+      // Pobierz dane karty z bazy danych
+      const { data: cardInfo, error: cardError } = await this.supabase
+        .from("cards")
+        .select("id, scryfall_id, name, mana_cost, type, rarity, image_url")
+        .eq("id", cardData.card_id)
+        .single();
+
+      if (cardError) {
+        throw new Error(`Failed to fetch card information: ${cardError.message}`);
+      }
+
+      if (!cardInfo) {
+        throw new Error("Card not found");
+      }
+
+      return {
+        id: updatedCard.id,
+        deck_id: updatedCard.deck_id,
+        card_id: updatedCard.card_id,
+        quantity: updatedCard.quantity,
+        is_sideboard: updatedCard.is_sideboard,
+        notes: updatedCard.notes,
+        added_at: updatedCard.added_at,
+        card: {
+          id: cardInfo.id,
+          scryfall_id: cardInfo.scryfall_id,
+          name: cardInfo.name,
+          mana_cost: cardInfo.mana_cost,
+          type: cardInfo.type,
+          rarity: cardInfo.rarity,
+          image_url: cardInfo.image_url,
+        },
+      };
     }
 
     // Pobierz dane karty z bazy danych

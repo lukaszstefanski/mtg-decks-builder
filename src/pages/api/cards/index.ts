@@ -3,8 +3,94 @@ import { CardService } from "../../../lib/services/card.service";
 import { CreateCardSchema } from "../../../lib/schemas/card.schemas";
 import { ErrorHandler, withErrorHandling } from "../../../lib/utils/error-handler";
 import { logger } from "../../../lib/utils/logger";
+import { z } from "zod";
 
 export const prerender = false;
+
+// Schema for scryfall_id query parameter
+const ScryfallIdSchema = z.string().uuid();
+
+/**
+ * GET /api/cards - Get card by Scryfall ID
+ * Query parameter: scryfall_id
+ */
+export const GET: APIRoute = withErrorHandling(async ({ url, locals }) => {
+  const requestId = locals.requestId;
+  const scryfallId = url.searchParams.get("scryfall_id");
+
+  if (!scryfallId) {
+    throw ErrorHandler.createValidationError(new Error("scryfall_id query parameter is required"));
+  }
+
+  // Validate scryfall_id parameter
+  const scryfallIdResult = ScryfallIdSchema.safeParse(scryfallId);
+  if (!scryfallIdResult.success) {
+    throw ErrorHandler.createValidationError(scryfallIdResult.error);
+  }
+
+  logger.logBusiness("Get card by Scryfall ID", "API", {
+    requestId,
+    scryfallId: scryfallIdResult.data,
+  });
+
+  // Get card by scryfall_id from database
+  const cardService = new CardService(locals.supabase);
+  
+  try {
+    // Search for card by scryfall_id
+    const { data: card, error } = await locals.supabase
+      .from("cards")
+      .select("*")
+      .eq("scryfall_id", scryfallIdResult.data)
+      .single();
+
+    if (error) {
+      if (error.code === "PGRST116") {
+        // No rows returned - card not found
+        return new Response(JSON.stringify({ error: "Card not found" }), {
+          status: 404,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }
+      
+      logger.logDatabase("select", "cards", undefined, error);
+      throw ErrorHandler.handleSupabaseError(error, "getCardByScryfallId");
+    }
+
+    if (!card) {
+      return new Response(JSON.stringify({ error: "Card not found" }), {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
+
+    // Transform card data
+    const transformedCard = cardService.transformCard(card);
+
+    logger.logBusiness("Card retrieved by Scryfall ID", "API", {
+      requestId,
+      cardId: card.id,
+      cardName: card.name,
+    });
+
+    return new Response(JSON.stringify(transformedCard), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    logger.error("Get card by Scryfall ID failed", "API", {
+      error: error instanceof Error ? error.message : String(error),
+      scryfallId: scryfallIdResult.data,
+    });
+    throw error;
+  }
+});
 
 /**
  * POST /api/cards - Create a new card

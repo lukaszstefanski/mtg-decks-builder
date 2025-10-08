@@ -154,10 +154,35 @@ export class CardService {
   }
 
   /**
-   * Create a new card
+   * Create a new card or get existing one if it already exists
    */
   async createCard(cardData: CreateCard): Promise<CardResponse> {
     try {
+      // First check if card already exists by scryfall_id
+      if (cardData.scryfall_id) {
+        const { data: existingCard, error: findError } = await this.supabase
+          .from("cards")
+          .select("*")
+          .eq("scryfall_id", cardData.scryfall_id)
+          .single();
+
+        if (findError && findError.code !== "PGRST116") {
+          // PGRST116 = no rows returned
+          logger.logDatabase("select", "cards", undefined, findError);
+          throw ErrorHandler.handleSupabaseError(findError, "createCard findExisting");
+        }
+
+        if (existingCard) {
+          logger.logBusiness("Card already exists, returning existing", "Service", {
+            cardId: existingCard.id,
+            cardName: existingCard.name,
+            scryfallId: cardData.scryfall_id,
+          });
+          return this.transformCard(existingCard);
+        }
+      }
+
+      // Card doesn't exist, create new one
       const { data: card, error } = await this.supabase.from("cards").insert([cardData]).select().single();
 
       if (error) {
@@ -254,7 +279,7 @@ export class CardService {
   /**
    * Transform card data from database to response format
    */
-  private transformCard(cardData: any): CardResponse {
+  public transformCard(cardData: any): CardResponse {
     return {
       id: cardData.id,
       scryfall_id: cardData.scryfall_id,
