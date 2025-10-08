@@ -13,9 +13,9 @@ import { useDeckCards } from "../../hooks/useDeckCards";
 import { useDeckMetadata } from "../../hooks/useDeckMetadata";
 import type {
   DeckResponse,
-  CardResponse,
+  ScryfallCardResponse,
   UpdateDeckRequest,
-  CardSearchParams,
+  ScryfallSearchParams,
   UpdateDeckCardRequest,
 } from "../../types";
 
@@ -72,9 +72,9 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deckId }) => {
 
   // Obsługa dodawania karty do decka
   const handleAddCard = useCallback(
-    async (card: CardResponse) => {
+    async (card: ScryfallCardResponse) => {
       try {
-        await deckCards.addCard(card);
+        await deckCards.addScryfallCard(card);
         // Opcjonalnie można dodać toast notification
       } catch (error) {
         console.error("Błąd dodawania karty:", error);
@@ -126,7 +126,7 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deckId }) => {
 
   // Obsługa wyszukiwania kart
   const handleSearch = useCallback(
-    async (params: CardSearchParams) => {
+    async (params: ScryfallSearchParams) => {
       try {
         await cardSearch.searchCards(params);
       } catch (error) {
@@ -177,6 +177,8 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deckId }) => {
               pagination={cardSearch.state.pagination}
               onAddCard={handleAddCard}
               deckCards={deckCards.state.cards}
+              loading={cardSearch.state.loading}
+              error={cardSearch.state.error}
             />
           </div>
 

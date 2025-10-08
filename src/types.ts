@@ -64,7 +64,7 @@ export interface DeckListResponse {
  * Card data for deck card responses
  * Based on cards table with selected fields
  */
-export type CardData = Pick<Tables<"cards">, "id" | "name" | "mana_cost" | "type" | "rarity" | "image_url">;
+export type CardData = Pick<Tables<"cards">, "id" | "scryfall_id" | "name" | "mana_cost" | "type" | "rarity" | "image_url">;
 
 /**
  * Deck card response with card data
@@ -399,7 +399,7 @@ export interface EmptyStateProps {
 export interface CardSearchState {
   query: string;
   filters: FilterState;
-  results: CardResponse[];
+  results: ScryfallCardResponse[];
   loading: boolean;
   error: string | null;
   pagination: PaginationInfo;
@@ -448,6 +448,75 @@ export interface ExtendedCardSearchParams extends CardSearchParams {
   type?: string[];
   rarity?: string[];
   set?: string;
+}
+
+// ============================================================================
+// SCRYFALL INTEGRATION TYPES
+// ============================================================================
+
+/**
+ * Karta z Scryfall przekształcona dla aplikacji
+ */
+export interface ScryfallCardResponse {
+  id: string;
+  scryfall_id: string;
+  name: string;
+  mana_cost?: string;
+  type: string;
+  rarity: string;
+  image_url?: string;
+  colors: string[];
+  set: string;
+  set_name: string;
+  cmc: number;
+  power?: string;
+  toughness?: string;
+  oracle_text?: string;
+  legalities: {
+    standard: string;
+    pioneer: string;
+    modern: string;
+    legacy: string;
+    vintage: string;
+    commander: string;
+    pauper: string;
+    historic: string;
+    brawl: string;
+    alchemy: string;
+    paupercommander: string;
+    duel: string;
+    oldschool: string;
+    premodern: string;
+    predh: string;
+  };
+  prices: {
+    usd?: string;
+    usd_foil?: string;
+    eur?: string;
+    eur_foil?: string;
+    tix?: string;
+  };
+}
+
+/**
+ * Parametry wyszukiwania Scryfall
+ */
+export interface ScryfallSearchParams {
+  q?: string;
+  format?: string;
+  order?: "name" | "set" | "released" | "rarity" | "color" | "usd" | "eur" | "tix" | "cmc" | "power" | "toughness" | "edhrec" | "penny";
+  dir?: "asc" | "desc";
+  page?: number;
+}
+
+/**
+ * Odpowiedź wyszukiwania Scryfall
+ */
+export interface ScryfallSearchResponse {
+  cards: ScryfallCardResponse[];
+  total_cards: number;
+  has_more: boolean;
+  next_page?: string;
 }
 
 /**

@@ -35,7 +35,16 @@ export class DeckCardService {
         quantity,
         is_sideboard,
         notes,
-        added_at
+        added_at,
+        cards!inner(
+          id,
+          scryfall_id,
+          name,
+          mana_cost,
+          type,
+          rarity,
+          image_url
+        )
       `
       )
       .eq("deck_id", deckId);
@@ -67,12 +76,13 @@ export class DeckCardService {
       notes: item.notes,
       added_at: item.added_at,
       card: {
-        id: item.card_id,
-        name: "Test Card",
-        mana_cost: "{2}{R}",
-        type: "Creature",
-        rarity: "Common",
-        image_url: null,
+        id: item.cards.id,
+        scryfall_id: item.cards.scryfall_id,
+        name: item.cards.name,
+        mana_cost: item.cards.mana_cost,
+        type: item.cards.type,
+        rarity: item.cards.rarity,
+        image_url: item.cards.image_url,
       },
     }));
 
@@ -111,7 +121,7 @@ export class DeckCardService {
     // Pobierz dane karty z bazy danych
     const { data: cardInfo, error: cardError } = await this.supabase
       .from("cards")
-      .select("id, name, mana_cost, type, rarity, image_url")
+      .select("id, scryfall_id, name, mana_cost, type, rarity, image_url")
       .eq("id", cardData.card_id)
       .single();
 
@@ -160,6 +170,7 @@ export class DeckCardService {
       added_at: data.added_at,
       card: {
         id: cardInfo.id,
+        scryfall_id: cardInfo.scryfall_id,
         name: cardInfo.name,
         mana_cost: cardInfo.mana_cost,
         type: cardInfo.type,
@@ -211,6 +222,17 @@ export class DeckCardService {
       throw new Error(`Failed to update deck card: ${error.message}`);
     }
 
+    // Pobierz dane karty z bazy danych
+    const { data: cardInfo, error: cardError } = await this.supabase
+      .from("cards")
+      .select("id, scryfall_id, name, mana_cost, type, rarity, image_url")
+      .eq("id", data.card_id)
+      .single();
+
+    if (cardError) {
+      throw new Error(`Failed to fetch card information: ${cardError.message}`);
+    }
+
     return {
       id: data.id,
       deck_id: data.deck_id,
@@ -220,12 +242,13 @@ export class DeckCardService {
       notes: data.notes,
       added_at: data.added_at,
       card: {
-        id: data.card_id,
-        name: "Test Card",
-        mana_cost: "{2}{R}",
-        type: "Creature",
-        rarity: "Common",
-        image_url: null,
+        id: cardInfo.id,
+        scryfall_id: cardInfo.scryfall_id,
+        name: cardInfo.name,
+        mana_cost: cardInfo.mana_cost,
+        type: cardInfo.type,
+        rarity: cardInfo.rarity,
+        image_url: cardInfo.image_url,
       },
     };
   }

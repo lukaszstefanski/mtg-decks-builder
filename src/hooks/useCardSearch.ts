@@ -1,11 +1,11 @@
 /**
  * useCardSearch - Custom hook do zarządzania wyszukiwaniem kart
- * Obsługuje stan wyszukiwania, filtry i komunikację z API
+ * Obsługuje stan wyszukiwania, filtry i komunikację z API Scryfall
  */
 
 import { useState, useCallback } from 'react';
-import { deckEditorService } from '../lib/services/deck-editor.service';
-import type { CardSearchState, FilterState, CardSearchParams } from '../types';
+import { scryfallService } from '../lib/services/scryfall.service';
+import type { CardSearchState, FilterState, ScryfallSearchParams, ScryfallCardResponse } from '../types';
 
 export const useCardSearch = () => {
   const [state, setState] = useState<CardSearchState>({
@@ -18,22 +18,27 @@ export const useCardSearch = () => {
   });
 
   /**
-   * Wyszukiwanie kart
+   * Wyszukiwanie kart w Scryfall
    */
-  const searchCards = useCallback(async (params: CardSearchParams) => {
+  const searchCards = useCallback(async (params: ScryfallSearchParams) => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
       
-      const response = await deckEditorService.searchCards(params);
+      const response = await scryfallService.searchCards(params);
       
       setState(prev => ({
         ...prev,
         results: response.cards,
-        pagination: response.pagination,
+        pagination: {
+          page: params.page || 1,
+          limit: 50,
+          total: response.total_cards,
+          pages: Math.ceil(response.total_cards / 50),
+        },
         loading: false,
       }));
     } catch (error) {
-      console.error('Błąd wyszukiwania kart:', error);
+      console.error('Błąd wyszukiwania kart w Scryfall:', error);
       setState(prev => ({
         ...prev,
         loading: false,
@@ -72,11 +77,11 @@ export const useCardSearch = () => {
   /**
    * Ładowanie kolejnej strony wyników
    */
-  const loadMore = useCallback(async (params: CardSearchParams) => {
+  const loadMore = useCallback(async (params: ScryfallSearchParams) => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
       
-      const response = await deckEditorService.searchCards({
+      const response = await scryfallService.searchCards({
         ...params,
         page: (params.page || 1) + 1,
       });
@@ -84,7 +89,12 @@ export const useCardSearch = () => {
       setState(prev => ({
         ...prev,
         results: [...prev.results, ...response.cards],
-        pagination: response.pagination,
+        pagination: {
+          page: params.page || 1,
+          limit: 50,
+          total: response.total_cards,
+          pages: Math.ceil(response.total_cards / 50),
+        },
         loading: false,
       }));
     } catch (error) {

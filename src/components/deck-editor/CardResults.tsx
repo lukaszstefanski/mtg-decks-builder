@@ -3,15 +3,15 @@
  * Obsługuje wyświetlanie kart, paginację i dodawanie kart do decka
  */
 
-import React, { useCallback } from 'react';
-import { Button } from '@/components/ui/button';
-import { CardItem } from './CardItem';
-import type { CardResponse, PaginationInfo, DeckCardResponse } from '../../types';
+import React, { useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { CardItem } from "./CardItem";
+import type { ScryfallCardResponse, PaginationInfo, DeckCardResponse } from "../../types";
 
 export interface CardResultsProps {
-  cards: CardResponse[];
+  cards: ScryfallCardResponse[];
   pagination: PaginationInfo;
-  onAddCard: (card: CardResponse) => void;
+  onAddCard: (card: ScryfallCardResponse) => void;
   deckCards: DeckCardResponse[];
   loading?: boolean;
   error?: string | null;
@@ -25,32 +25,44 @@ export const CardResults: React.FC<CardResultsProps> = ({
   loading = false,
   error = null,
 }) => {
-  // Sprawdzanie czy karta jest w decku
-  const isCardInDeck = useCallback((cardId: string) => {
-    return deckCards.some(deckCard => deckCard.card_id === cardId);
-  }, [deckCards]);
+  // Sprawdzanie czy karta jest w decku (używając scryfall_id)
+  const isCardInDeck = useCallback(
+    (scryfallId: string) => {
+      return deckCards.some((deckCard) => deckCard.card.scryfall_id === scryfallId);
+    },
+    [deckCards]
+  );
 
-  // Pobieranie ilości karty w decku
-  const getCardQuantity = useCallback((cardId: string) => {
-    const deckCard = deckCards.find(deckCard => deckCard.card_id === cardId);
-    return deckCard?.quantity || 0;
-  }, [deckCards]);
+  // Pobieranie ilości karty w decku (używając scryfall_id)
+  const getCardQuantity = useCallback(
+    (scryfallId: string) => {
+      const deckCard = deckCards.find((deckCard) => deckCard.card.scryfall_id === scryfallId);
+      return deckCard?.quantity || 0;
+    },
+    [deckCards]
+  );
 
   // Sprawdzanie czy można dodać więcej kart
-  const canAddMoreCards = useCallback((card: CardResponse) => {
-    const currentQuantity = getCardQuantity(card.id);
-    const isLand = card.type.toLowerCase().includes('land');
-    
-    // Landy nie mają limitu, inne karty maksymalnie 4
-    return isLand || currentQuantity < 4;
-  }, [getCardQuantity]);
+  const canAddMoreCards = useCallback(
+    (card: ScryfallCardResponse) => {
+      const currentQuantity = getCardQuantity(card.scryfall_id);
+      const isLand = card.type.toLowerCase().includes("land");
+
+      // Landy nie mają limitu, inne karty maksymalnie 4
+      return isLand || currentQuantity < 4;
+    },
+    [getCardQuantity]
+  );
 
   // Obsługa dodawania karty
-  const handleAddCard = useCallback((card: CardResponse) => {
-    if (canAddMoreCards(card)) {
-      onAddCard(card);
-    }
-  }, [onAddCard, canAddMoreCards]);
+  const handleAddCard = useCallback(
+    (card: ScryfallCardResponse) => {
+      if (canAddMoreCards(card)) {
+        onAddCard(card);
+      }
+    },
+    [onAddCard, canAddMoreCards]
+  );
 
   if (loading) {
     return (
@@ -90,12 +102,8 @@ export const CardResults: React.FC<CardResultsProps> = ({
       {/* Header z informacjami o wynikach */}
       <div className="px-6 py-4 border-b">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Wyniki wyszukiwania
-          </h3>
-          <div className="text-sm text-gray-600">
-            {pagination.total} kart
-          </div>
+          <h3 className="text-lg font-semibold text-gray-900">Wyniki wyszukiwania</h3>
+          <div className="text-sm text-gray-600">{pagination.total} kart</div>
         </div>
       </div>
 
@@ -103,10 +111,10 @@ export const CardResults: React.FC<CardResultsProps> = ({
       <div className="divide-y">
         {cards.map((card) => (
           <CardItem
-            key={card.id}
+            key={card.scryfall_id}
             card={card}
-            isInDeck={isCardInDeck(card.id)}
-            currentQuantity={getCardQuantity(card.id)}
+            isInDeck={isCardInDeck(card.scryfall_id)}
+            currentQuantity={getCardQuantity(card.scryfall_id)}
             canAddMore={canAddMoreCards(card)}
             onAdd={() => handleAddCard(card)}
           />
@@ -127,7 +135,6 @@ export const CardResults: React.FC<CardResultsProps> = ({
                 disabled={pagination.page <= 1}
                 onClick={() => {
                   // TODO: Implementacja ładowania poprzedniej strony
-                  console.log('Poprzednia strona');
                 }}
               >
                 Poprzednia
@@ -138,7 +145,6 @@ export const CardResults: React.FC<CardResultsProps> = ({
                 disabled={pagination.page >= pagination.pages}
                 onClick={() => {
                   // TODO: Implementacja ładowania następnej strony
-                  console.log('Następna strona');
                 }}
               >
                 Następna

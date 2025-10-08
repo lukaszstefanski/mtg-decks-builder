@@ -5,10 +5,11 @@
 
 import React, { useState, useCallback, useEffect } from "react";
 import { CardFilters } from "./CardFilters";
-import type { CardSearchParams, FilterState } from "../../types";
+import { scryfallService } from "../../lib/services/scryfall.service";
+import type { ScryfallSearchParams, FilterState } from "../../types";
 
 export interface CardSearchProps {
-  onSearch: (params: CardSearchParams) => void;
+  onSearch: (params: ScryfallSearchParams) => void;
   onFiltersChange: (filters: FilterState) => void;
 }
 
@@ -39,17 +40,23 @@ export const CardSearch: React.FC<CardSearchProps> = ({ onSearch, onFiltersChang
       }
 
       const timeout = setTimeout(() => {
-        const searchParams: CardSearchParams = {
-          q: query.trim() || undefined,
+        // Budowanie zapytania Scryfall
+        const scryfallQuery = scryfallService.buildSearchQuery({
+          query: query.trim() || undefined,
           colors: currentFilters.colors.length > 0 ? currentFilters.colors : undefined,
-          mana_cost:
+          manaCost:
             currentFilters.manaCost.exact?.toString() ||
             (currentFilters.manaCost.min !== undefined && currentFilters.manaCost.max !== undefined)
               ? `${currentFilters.manaCost.min}-${currentFilters.manaCost.max}`
               : undefined,
-          type: currentFilters.types.length > 0 ? currentFilters.types : undefined,
+          types: currentFilters.types.length > 0 ? currentFilters.types : undefined,
+        });
+
+        const searchParams: ScryfallSearchParams = {
+          q: scryfallQuery || undefined,
+          order: "name",
+          dir: "asc",
           page: 1,
-          limit: 50,
         };
 
         onSearch(searchParams);
@@ -90,8 +97,8 @@ export const CardSearch: React.FC<CardSearchProps> = ({ onSearch, onFiltersChang
       clearTimeout(searchState.debounceTimeout);
     }
 
-    // Wyszukiwanie pustego zapytania
-    onSearch({ page: 1, limit: 50 });
+    // Wyszukiwanie pustego zapytania - pokazanie losowej karty
+    onSearch({ q: "is:commander", order: "name", dir: "asc", page: 1 });
   }, [onSearch, onFiltersChange, searchState.debounceTimeout]);
 
   // Czyszczenie timeout przy unmount
@@ -108,9 +115,12 @@ export const CardSearch: React.FC<CardSearchProps> = ({ onSearch, onFiltersChang
       <div className="space-y-4">
         {/* Pole wyszukiwania */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Wyszukaj karty</label>
+          <label htmlFor="card-search" className="block text-sm font-medium text-gray-700 mb-2">
+            Wyszukaj karty
+          </label>
           <div className="relative">
             <input
+              id="card-search"
               type="text"
               value={searchState.query}
               onChange={(e) => handleQueryChange(e.target.value)}
