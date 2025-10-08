@@ -388,7 +388,7 @@ class DeckEditorService {
 ## 11. Kroki implementacji
 
 1. **Przygotowanie struktury**
-   - Utworzenie katalogu `src/components/deck-editor/`
+   - Utworzenie katalogu `src/components/DeckEditor/`
    - Utworzenie plików komponentów zgodnie ze strukturą
    - Konfiguracja routing w Astro
 
