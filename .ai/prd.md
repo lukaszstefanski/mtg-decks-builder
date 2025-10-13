@@ -147,7 +147,7 @@ Gracze Magic: The Gathering napotykają następujące problemy:
 
 **Tytuł:** Jako nowy użytkownik chcę się zarejestrować, aby móc korzystać z aplikacji
 
-**Opis:** Nowy użytkownik chce utworzyć konto w aplikacji MtG Decks Builder, aby móc tworzyć i zarządzać swoimi deckami.
+**Opis:** Nowy użytkownik chce utworzyć konto w aplikacji MtG Decks Builder, aby móc tworzyć i zarządzać swoimi deckami. Bez utworzonego konta nie ma możliwości tworzenia decków.
 
 **Kryteria akceptacji:**
 
