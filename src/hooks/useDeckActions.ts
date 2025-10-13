@@ -34,10 +34,7 @@ export const useDeckActions = ({ userId, onSuccess, onError }: UseDeckActionsPar
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            ...deckData,
-            user_id: userId,
-          }),
+          body: JSON.stringify(deckData),
         });
 
         if (!response.ok) {
@@ -75,7 +72,7 @@ export const useDeckActions = ({ userId, onSuccess, onError }: UseDeckActionsPar
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ ...data, user_id: userId }),
+          body: JSON.stringify(data),
         });
 
         if (!response.ok) {
@@ -113,7 +110,7 @@ export const useDeckActions = ({ userId, onSuccess, onError }: UseDeckActionsPar
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ user_id: userId }),
+          body: JSON.stringify({}),
         });
 
         if (!response.ok) {

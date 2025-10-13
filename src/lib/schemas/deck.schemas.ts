@@ -5,7 +5,17 @@ import { z } from "zod";
 // ============================================================================
 
 /**
- * Schema for creating a new deck (POST /api/decks)
+ * Schema for creating a new deck request (POST /api/decks)
+ * user_id is set from authenticated session
+ */
+export const CreateDeckRequestSchema = z.object({
+  name: z.string().min(1, "Nazwa decka jest wymagana").max(100, "Nazwa decka nie może przekraczać 100 znaków").trim(),
+  description: z.string().max(500, "Opis nie może przekraczać 500 znaków").optional().nullable(),
+  format: z.string().min(1, "Format jest wymagany").max(50, "Format nie może przekraczać 50 znaków").trim(),
+});
+
+/**
+ * Schema for creating a new deck (internal use with user_id)
  */
 export const CreateDeckSchema = z.object({
   name: z.string().min(1, "Nazwa decka jest wymagana").max(100, "Nazwa decka nie może przekraczać 100 znaków").trim(),
@@ -15,7 +25,22 @@ export const CreateDeckSchema = z.object({
 });
 
 /**
- * Schema for updating a deck (PUT /api/decks/{deckId})
+ * Schema for updating a deck request (PUT /api/decks/{deckId})
+ * user_id is set from authenticated session
+ */
+export const UpdateDeckRequestSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Nazwa decka jest wymagana")
+    .max(100, "Nazwa decka nie może przekraczać 100 znaków")
+    .trim()
+    .optional(),
+  description: z.string().max(500, "Opis nie może przekraczać 500 znaków").optional().nullable(),
+  format: z.string().min(1, "Format jest wymagany").max(50, "Format nie może przekraczać 50 znaków").trim().optional(),
+});
+
+/**
+ * Schema for updating a deck (internal use with user_id)
  */
 export const UpdateDeckSchema = z.object({
   name: z
@@ -52,7 +77,13 @@ export const DeckListQuerySchema = z.object({
 export const DeckIdSchema = z.string().uuid("Nieprawidłowy format ID decka");
 
 /**
- * Schema for deleting a deck (DELETE /api/decks/{deckId})
+ * Schema for deleting a deck request (DELETE /api/decks/{deckId})
+ * user_id is set from authenticated session
+ */
+export const DeleteDeckRequestSchema = z.object({});
+
+/**
+ * Schema for deleting a deck (internal use with user_id)
  */
 export const DeleteDeckSchema = z.object({
   user_id: z.string().uuid("Nieprawidłowy format ID użytkownika"),
@@ -173,8 +204,11 @@ export const ValidationErrorResponseSchema = ApiErrorResponseSchema.extend({
 // TYPE EXPORTS
 // ============================================================================
 
+export type CreateDeckRequest = z.infer<typeof CreateDeckRequestSchema>;
 export type CreateDeckInput = z.infer<typeof CreateDeckSchema>;
+export type UpdateDeckRequest = z.infer<typeof UpdateDeckRequestSchema>;
 export type UpdateDeckInput = z.infer<typeof UpdateDeckSchema>;
+export type DeleteDeckRequest = z.infer<typeof DeleteDeckRequestSchema>;
 export type DeleteDeckInput = z.infer<typeof DeleteDeckSchema>;
 export type DeckListQuery = z.infer<typeof DeckListQuerySchema>;
 export type AddCardToDeckInput = z.infer<typeof AddCardToDeckSchema>;

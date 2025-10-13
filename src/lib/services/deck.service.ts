@@ -23,11 +23,46 @@ export class DeckService {
   constructor(private supabase: SupabaseClient<Database>) {}
 
   /**
+   * Get user ID from database based on Supabase Auth ID
+   */
+  private async getUserIdFromAuthId(authId: string): Promise<string> {
+    logger.logBusiness("Looking up user by auth ID", "DeckService", {
+      authId,
+    });
+
+    const { data: user, error } = await this.supabase
+      .from("users")
+      .select("id, email, username")
+      .eq("supabase_auth_id", authId)
+      .single();
+
+    if (error || !user) {
+      logger.logDatabase("select", "users", undefined, error);
+      logger.logBusiness("User not found in database", "DeckService", {
+        authId,
+        error: error?.message,
+      });
+      throw new NotFoundError(`User not found in database. Auth ID: ${authId}`);
+    }
+
+    logger.logBusiness("User found in database", "DeckService", {
+      authId,
+      userId: user.id,
+      email: user.email,
+    });
+
+    return user.id;
+  }
+
+  /**
    * Get paginated list of decks for a user
    */
-  async getDecks(userId: string, query: DeckListQuery): Promise<DeckListResponse> {
+  async getDecks(authId: string, query: DeckListQuery): Promise<DeckListResponse> {
     const { search, format, page, limit, sort, order } = query;
     const offset = (page - 1) * limit;
+
+    // Get user ID from auth ID
+    const userId = await this.getUserIdFromAuthId(authId);
 
     // Build query with filters
     let queryBuilder = this.supabase.from("decks").select("*").eq("user_id", userId);
@@ -83,13 +118,16 @@ export class DeckService {
    * Create a new deck
    */
   async createDeck(command: CreateDeckCommand): Promise<DeckResponse> {
-    const { user_id, ...deckData } = command;
+    const { user_id: authId, ...deckData } = command;
+
+    // Get user ID from auth ID
+    const userId = await this.getUserIdFromAuthId(authId);
 
     const { data: deck, error } = await this.supabase
       .from("decks")
       .insert({
         ...deckData,
-        user_id,
+        user_id: userId,
         deck_size: 0,
         created_at: new Date().toISOString(),
         last_modified: new Date().toISOString(),
@@ -109,14 +147,17 @@ export class DeckService {
    * Update an existing deck
    */
   async updateDeck(command: UpdateDeckCommand): Promise<DeckResponse> {
-    const { deck_id, user_id, ...updateData } = command;
+    const { deck_id, user_id: authId, ...updateData } = command;
+
+    // Get user ID from auth ID
+    const userId = await this.getUserIdFromAuthId(authId);
 
     // First verify ownership
     const { data: existingDeck, error: ownershipError } = await this.supabase
       .from("decks")
       .select("id")
       .eq("id", deck_id)
-      .eq("user_id", user_id)
+      .eq("user_id", userId)
       .single();
 
     if (ownershipError || !existingDeck) {
@@ -131,7 +172,7 @@ export class DeckService {
         last_modified: new Date().toISOString(),
       })
       .eq("id", deck_id)
-      .eq("user_id", user_id)
+      .eq("user_id", userId)
       .select()
       .single();
 
@@ -147,14 +188,17 @@ export class DeckService {
    * Delete a deck
    */
   async deleteDeck(command: DeleteDeckCommand): Promise<void> {
-    const { deck_id, user_id } = command;
+    const { deck_id, user_id: authId } = command;
+
+    // Get user ID from auth ID
+    const userId = await this.getUserIdFromAuthId(authId);
 
     // First verify ownership
     const { data: existingDeck, error: ownershipError } = await this.supabase
       .from("decks")
       .select("id")
       .eq("id", deck_id)
-      .eq("user_id", user_id)
+      .eq("user_id", userId)
       .single();
 
     if (ownershipError || !existingDeck) {
@@ -162,7 +206,7 @@ export class DeckService {
     }
 
     // Delete deck (cascade will handle deck_cards)
-    const { error } = await this.supabase.from("decks").delete().eq("id", deck_id).eq("user_id", user_id);
+    const { error } = await this.supabase.from("decks").delete().eq("id", deck_id).eq("user_id", userId);
 
     if (error) {
       logger.logDatabase("delete", "decks", undefined, error);
@@ -173,7 +217,10 @@ export class DeckService {
   /**
    * Add a card to a deck
    */
-  async addCardToDeck(deckId: string, userId: string, cardData: AddCardToDeckInput): Promise<DeckCardResponse> {
+  async addCardToDeck(deckId: string, authId: string, cardData: AddCardToDeckInput): Promise<DeckCardResponse> {
+    // Get user ID from auth ID
+    const userId = await this.getUserIdFromAuthId(authId);
+
     // Verify deck ownership
     const { data: deck, error: deckError } = await this.supabase
       .from("decks")
@@ -263,9 +310,12 @@ export class DeckService {
   async updateDeckCard(
     deckId: string,
     cardId: string,
-    userId: string,
+    authId: string,
     updateData: UpdateDeckCardInput
   ): Promise<DeckCardResponse> {
+    // Get user ID from auth ID
+    const userId = await this.getUserIdFromAuthId(authId);
+
     // Verify deck ownership
     const { data: deck, error: deckError } = await this.supabase
       .from("decks")
@@ -312,7 +362,10 @@ export class DeckService {
   /**
    * Remove a card from a deck
    */
-  async removeCardFromDeck(deckId: string, cardId: string, userId: string): Promise<void> {
+  async removeCardFromDeck(deckId: string, cardId: string, authId: string): Promise<void> {
+    // Get user ID from auth ID
+    const userId = await this.getUserIdFromAuthId(authId);
+
     // Verify deck ownership
     const { data: deck, error: deckError } = await this.supabase
       .from("decks")
@@ -389,6 +442,66 @@ export class DeckService {
         total: count || 0,
         pages: Math.ceil((count || 0) / limit),
       },
+    };
+  }
+
+  /**
+   * Get deck by ID for a specific user
+   */
+  async getDeck(deckId: string, authId: string): Promise<DeckDetailResponse> {
+    // Get user ID from auth ID
+    const userId = await this.getUserIdFromAuthId(authId);
+
+    // Get deck with cards, filtered by user
+    const { data: deckData, error: deckError } = await this.supabase
+      .from("decks")
+      .select(`
+        *,
+        deck_cards (
+          id,
+          card_id,
+          quantity,
+          is_sideboard,
+          notes,
+          added_at,
+          cards (
+            id,
+            name,
+            mana_cost,
+            type,
+            rarity,
+            image_url
+          )
+        )
+      `)
+      .eq("id", deckId)
+      .eq("user_id", userId)
+      .single();
+
+    if (deckError) {
+      if (deckError.code === "PGRST116") {
+        throw new NotFoundError("Deck not found or access denied");
+      }
+      logger.logDatabase("select", "decks", undefined, deckError);
+      throw ErrorHandler.handleSupabaseError(deckError, "getDeck select");
+    }
+
+    if (!deckData) {
+      throw new NotFoundError("Deck not found or access denied");
+    }
+
+    // Transform deck cards
+    const cards = (deckData.deck_cards || []).map((cardData: any) => this.transformDeckCard(cardData));
+
+    return {
+      id: deckData.id,
+      name: deckData.name,
+      description: deckData.description,
+      format: deckData.format,
+      deck_size: deckData.deck_size || 0,
+      created_at: deckData.created_at || new Date().toISOString(),
+      last_modified: deckData.last_modified || deckData.created_at || new Date().toISOString(),
+      cards,
     };
   }
 

@@ -60,12 +60,12 @@ export const DeckCard: React.FC<DeckCardProps> = ({ deck, onEdit, onDelete, onVi
           <div className="flex items-center space-x-4">
             <div className="flex items-center">
               <Calendar className="h-4 w-4 mr-1" />
-              <span>Utworzono {deck.created_at ? formatDate(deck.created_at) : 'Nieznana data'}</span>
+              <span>Utworzono {deck.created_at ? formatDate(deck.created_at) : "Nieznana data"}</span>
             </div>
             {deck.last_modified !== deck.created_at && (
               <div className="flex items-center">
                 <Users className="h-4 w-4 mr-1" />
-                <span>Zmodyfikowano {deck.last_modified ? formatDate(deck.last_modified) : 'Nieznana data'}</span>
+                <span>Zmodyfikowano {deck.last_modified ? formatDate(deck.last_modified) : "Nieznana data"}</span>
               </div>
             )}
           </div>
