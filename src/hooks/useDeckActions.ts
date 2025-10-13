@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import type { CreateDeckRequest, UpdateDeckRequest, DeckResponse } from "../types";
 
 export interface UseDeckActionsParams {
+  userId: string | null;
   onSuccess?: () => void;
   onError?: (error: string) => void;
 }
@@ -14,12 +15,16 @@ export interface UseDeckActionsReturn {
   error: string | null;
 }
 
-export const useDeckActions = ({ onSuccess, onError }: UseDeckActionsParams): UseDeckActionsReturn => {
+export const useDeckActions = ({ userId, onSuccess, onError }: UseDeckActionsParams): UseDeckActionsReturn => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const createDeck = useCallback(
     async (deckData: CreateDeckRequest): Promise<DeckResponse> => {
+      if (!userId) {
+        throw new Error("Użytkownik nie jest zalogowany");
+      }
+
       setLoading(true);
       setError(null);
 
@@ -29,7 +34,10 @@ export const useDeckActions = ({ onSuccess, onError }: UseDeckActionsParams): Us
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ ...deckData, user_id: "e14ddfdd-85e8-4dc9-bddd-a90ac4de373f" }),
+          body: JSON.stringify({
+            ...deckData,
+            user_id: userId,
+          }),
         });
 
         if (!response.ok) {
@@ -49,11 +57,15 @@ export const useDeckActions = ({ onSuccess, onError }: UseDeckActionsParams): Us
         setLoading(false);
       }
     },
-    [onSuccess, onError]
+    [userId, onSuccess, onError]
   );
 
   const updateDeck = useCallback(
     async (deckId: string, data: UpdateDeckRequest): Promise<DeckResponse> => {
+      if (!userId) {
+        throw new Error("Użytkownik nie jest zalogowany");
+      }
+
       setLoading(true);
       setError(null);
 
@@ -63,7 +75,7 @@ export const useDeckActions = ({ onSuccess, onError }: UseDeckActionsParams): Us
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ ...data, user_id: "e14ddfdd-85e8-4dc9-bddd-a90ac4de373f" }),
+          body: JSON.stringify({ ...data, user_id: userId }),
         });
 
         if (!response.ok) {
@@ -83,11 +95,15 @@ export const useDeckActions = ({ onSuccess, onError }: UseDeckActionsParams): Us
         setLoading(false);
       }
     },
-    [onSuccess, onError]
+    [userId, onSuccess, onError]
   );
 
   const deleteDeck = useCallback(
     async (deckId: string): Promise<void> => {
+      if (!userId) {
+        throw new Error("Użytkownik nie jest zalogowany");
+      }
+
       setLoading(true);
       setError(null);
 
@@ -97,7 +113,7 @@ export const useDeckActions = ({ onSuccess, onError }: UseDeckActionsParams): Us
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ user_id: "e14ddfdd-85e8-4dc9-bddd-a90ac4de373f" }), // TODO: Get actual user ID
+          body: JSON.stringify({ user_id: userId }),
         });
 
         if (!response.ok) {
@@ -115,7 +131,7 @@ export const useDeckActions = ({ onSuccess, onError }: UseDeckActionsParams): Us
         setLoading(false);
       }
     },
-    [onSuccess, onError]
+    [userId, onSuccess, onError]
   );
 
   return {

@@ -1,8 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { Dashboard } from "../components/Dashboard";
+
+// Pobieranie danych użytkownika z middleware
+const user = Astro.locals.user as { id?: string; email?: string; username?: string } | null;
 ---
 
 <Layout>
-  <Dashboard client:load />
+  <Dashboard client:load user={user} />
 </Layout>

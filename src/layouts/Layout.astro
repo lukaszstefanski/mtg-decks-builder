@@ -6,10 +6,13 @@ interface Props {
 }
 
 const { title = "MtG Decks Builder" } = Astro.props;
+
+// Pobieranie danych użytkownika z middleware
+const user = Astro.locals.user as { id?: string; email?: string; username?: string } | null;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="pl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -18,7 +21,71 @@ const { title = "MtG Decks Builder" } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
-    <slot />
+    <header class="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700">
+      <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex items-center">
+            <a href="/" class="flex-shrink-0 flex items-center">
+              <span class="text-xl font-bold text-gray-900 dark:text-white">
+                MtG Decks Builder
+              </span>
+            </a>
+          </div>
+          
+          <div class="flex items-center space-x-4">
+            {user ? (
+              // Authenticated user navigation
+              <div class="flex items-center space-x-4">
+                <a 
+                  href="/" 
+                  class="text-gray-700 dark:text-gray-300 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Moje decki
+                </a>
+                <div class="relative">
+                  <button class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    <span class="sr-only">Otwórz menu użytkownika</span>
+                    <div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+                      <span class="text-sm font-medium text-primary-foreground">
+                        {user?.email?.charAt(0).toUpperCase() || 'U'}
+                      </span>
+                    </div>
+                  </button>
+                </div>
+                <form method="POST" action="/api/auth/logout" class="inline">
+                  <button 
+                    type="submit"
+                    class="text-gray-700 dark:text-gray-300 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Wyloguj się
+                  </button>
+                </form>
+              </div>
+            ) : (
+              // Guest user navigation
+              <div class="flex items-center space-x-4">
+                <a 
+                  href="/login" 
+                  class="text-gray-700 dark:text-gray-300 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Zaloguj się
+                </a>
+                <a 
+                  href="/register" 
+                  class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  Zarejestruj się
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      </nav>
+    </header>
+    
+    <main>
+      <slot user={user} />
+    </main>
   </body>
 </html>
 

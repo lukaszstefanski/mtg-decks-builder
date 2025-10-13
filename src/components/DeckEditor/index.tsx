@@ -21,6 +21,7 @@ import type {
 
 export interface DeckEditorProps {
   deckId: string;
+  user?: { id?: string; email?: string; username?: string } | null;
 }
 
 export interface DeckEditorState {
@@ -29,7 +30,7 @@ export interface DeckEditorState {
   error: string | null;
 }
 
-export const DeckEditor: React.FC<DeckEditorProps> = ({ deckId }) => {
+export const DeckEditor: React.FC<DeckEditorProps> = ({ deckId, user }) => {
   const [state, setState] = useState<DeckEditorState>({
     deck: null,
     loading: true,
@@ -39,7 +40,7 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deckId }) => {
   // Custom hooki do zarządzania stanem
   const cardSearch = useCardSearch();
   const deckCards = useDeckCards(deckId);
-  const deckMetadata = useDeckMetadata(deckId);
+  const deckMetadata = useDeckMetadata(deckId, user?.id);
 
   // Ładowanie danych decka przy inicjalizacji
   useEffect(() => {

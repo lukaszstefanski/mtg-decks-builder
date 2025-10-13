@@ -133,6 +133,42 @@ export class ErrorHandler {
   }
 
   /**
+   * Handle Supabase Auth errors and convert to appropriate API errors
+   */
+  static handleSupabaseAuthError(error: any, context: string): ApiError {
+    console.error(`Supabase Auth error in ${context}:`, error);
+
+    // Handle specific Supabase Auth error messages
+    if (error.message) {
+      if (error.message.includes("Invalid login credentials")) {
+        return new AuthenticationError("Nieprawidłowy email lub hasło");
+      } else if (error.message.includes("Email not confirmed")) {
+        return new AuthenticationError("Email nie został potwierdzony. Sprawdź swoją skrzynkę pocztową.");
+      } else if (error.message.includes("User already registered")) {
+        return new ConflictError("Użytkownik z tym adresem email już istnieje");
+      } else if (error.message.includes("Password should be at least")) {
+        return new ValidationError("Hasło musi mieć co najmniej 8 znaków", {
+          password: ["Hasło musi mieć co najmniej 8 znaków"]
+        });
+      } else if (error.message.includes("Invalid email")) {
+        return new ValidationError("Niepoprawny format emaila", {
+          email: ["Niepoprawny format emaila"]
+        });
+      } else if (error.message.includes("Signup is disabled")) {
+        return new ApiError("Rejestracja jest obecnie wyłączona", 503, "SERVICE_UNAVAILABLE");
+      } else if (error.message.includes("Too many requests")) {
+        return new RateLimitError("Zbyt wiele prób. Spróbuj ponownie za chwilę.");
+      } else if (error.message.includes("User not found")) {
+        // Dla bezpieczeństwa nie ujawniamy czy email istnieje
+        return new AuthenticationError("Jeśli podany email istnieje w systemie, otrzymasz link do resetowania hasła");
+      }
+    }
+
+    // Default auth error
+    return new AuthenticationError("Wystąpił błąd autentykacji. Spróbuj ponownie.");
+  }
+
+  /**
    * Log error with context information
    */
   static logError(error: Error, context: string, additionalInfo?: Record<string, any>): void {

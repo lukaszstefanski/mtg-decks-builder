@@ -64,7 +64,7 @@ export class DeckEditorService {
   /**
    * Aktualizacja metadanych decka
    */
-  async updateDeck(deckId: string, data: UpdateDeckRequest): Promise<DeckResponse> {
+  async updateDeck(deckId: string, data: UpdateDeckRequest & { user_id: string }): Promise<DeckResponse> {
     const response = await fetch(`${this.baseUrl}/decks/${deckId}`, {
       method: "PUT",
       headers: {

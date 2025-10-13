@@ -8,8 +8,11 @@ const { deckId } = Astro.params;
 if (!deckId) {
   throw new Error("Brak identyfikatora decka w URL");
 }
+
+// Pobieranie danych użytkownika z middleware
+const user = Astro.locals.user as { id?: string; email?: string; username?: string } | null;
 ---
 
 <Layout title="Edytor Decku - MTG Decks Builder">
-  <DeckEditor deckId={deckId} client:load />
+  <DeckEditor deckId={deckId} user={user} client:load />
 </Layout>

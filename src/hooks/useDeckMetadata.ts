@@ -13,7 +13,7 @@ export interface DeckMetadataState {
   error: string | null;
 }
 
-export const useDeckMetadata = (deckId: string) => {
+export const useDeckMetadata = (deckId: string, userId?: string | null) => {
   const [state, setState] = useState<DeckMetadataState>({
     deck: null,
     loading: false,
@@ -37,7 +37,7 @@ export const useDeckMetadata = (deckId: string) => {
 
       return deck;
     } catch (error) {
-      console.error("Błąd ładowania decka:", error);
+      // console.error("Błąd ładowania decka:", error);
       setState((prev) => ({
         ...prev,
         loading: false,
@@ -52,12 +52,16 @@ export const useDeckMetadata = (deckId: string) => {
    */
   const updateDeck = useCallback(
     async (data: UpdateDeckRequest): Promise<DeckResponse | null> => {
+      if (!userId) {
+        throw new Error("Użytkownik nie jest zalogowany");
+      }
+
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
 
         const updatedDeck = await deckEditorService.updateDeck(deckId, {
           ...data,
-          user_id: "e14ddfdd-85e8-4dc9-bddd-a90ac4de373f",
+          user_id: userId,
         });
 
         setState((prev) => ({
@@ -68,7 +72,7 @@ export const useDeckMetadata = (deckId: string) => {
 
         return updatedDeck;
       } catch (error) {
-        console.error("Błąd aktualizacji decka:", error);
+        // console.error("Błąd aktualizacji decka:", error);
         setState((prev) => ({
           ...prev,
           loading: false,
@@ -77,7 +81,7 @@ export const useDeckMetadata = (deckId: string) => {
         throw error;
       }
     },
-    [deckId]
+    [deckId, userId]
   );
 
   /**

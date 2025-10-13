@@ -7,12 +7,20 @@ import { EditDeckDialog } from "./EditDeckDialog";
 import { useDeckList } from "../../hooks/useDeckList";
 import { useDeckSearch } from "../../hooks/useDeckSearch";
 import { useDeckActions } from "../../hooks/useDeckActions";
+import { useAuth } from "../../hooks/useAuth";
 import type { DeckResponse, CreateDeckRequest, UpdateDeckRequest } from "../../types";
 
-export const Dashboard = () => {
+export interface DashboardProps {
+  user?: { id?: string; email?: string; username?: string } | null;
+}
+
+export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [editingDeck, setEditingDeck] = useState<DeckResponse | null>(null);
   const [deletingDeck, setDeletingDeck] = useState<DeckResponse | null>(null);
+
+  // Pobieranie danych użytkownika
+  const { userId, isAuthenticated } = useAuth(user);
 
   const { decks, loading, error, pagination, refetch } = useDeckList({
     search: searchQuery,
@@ -23,6 +31,7 @@ export const Dashboard = () => {
   });
 
   const { createDeck, updateDeck, deleteDeck } = useDeckActions({
+    userId,
     onSuccess: () => {
       refetch();
       setEditingDeck(null);
