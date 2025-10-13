@@ -14,26 +14,18 @@ export const POST: APIRoute = async ({ cookies }) => {
 
     if (error) {
       console.error("Logout error:", error);
-      return ErrorHandler.createErrorResponse(
-        new Error("Wystąpił błąd podczas wylogowywania. Spróbuj ponownie.")
-      );
+      return ErrorHandler.createErrorResponse(new Error("Wystąpił błąd podczas wylogowywania. Spróbuj ponownie."));
     }
 
-    // Pomyślne wylogowanie
-    return new Response(
-      JSON.stringify({ 
-        message: "Wylogowano pomyślnie!" 
-      }),
-      { 
-        status: 200,
-        headers: { "Content-Type": "application/json" }
-      }
-    );
-
+    // Pomyślne wylogowanie - przekierowanie na stronę główną
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: "/",
+      },
+    });
   } catch (error) {
     console.error("Logout endpoint error:", error);
-    return ErrorHandler.createErrorResponse(
-      new Error("Wystąpił błąd podczas wylogowywania. Spróbuj ponownie.")
-    );
+    return ErrorHandler.createErrorResponse(new Error("Wystąpił błąd podczas wylogowywania. Spróbuj ponownie."));
   }
 };
