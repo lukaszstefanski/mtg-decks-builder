@@ -168,8 +168,8 @@ Dokument definiuje kompleksową strategię testowania aplikacji MtG Decks Builde
 
 2. Narzędzia testowe:
    - Jest
-   - React Testing Library
-   - Cypress
+   - Vitest
+   - Playwright
    - k6 (testy wydajnościowe)
    - ESLint
    - Prettier
@@ -191,13 +191,12 @@ Dokument definiuje kompleksową strategię testowania aplikacji MtG Decks Builde
 ### 6.1 Testy jednostkowe i integracyjne
 
 - Jest
-- React Testing Library
+- Vitest
 - MSW (Mock Service Worker)
 - Supertest
 
 ### 6.2 Testy E2E
 
-- Cypress
 - Playwright
 
 ### 6.3 Testy wydajnościowe

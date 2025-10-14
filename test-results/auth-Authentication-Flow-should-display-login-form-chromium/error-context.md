@@ -1,0 +1,55 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - link "MtG Decks Builder" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e7]: MtG Decks Builder
+        - generic [ref=e9]:
+          - link "Zaloguj się" [ref=e10] [cursor=pointer]:
+            - /url: /login
+          - link "Zarejestruj się" [ref=e11] [cursor=pointer]:
+            - /url: /register
+  - main [ref=e12]:
+    - main [ref=e13]:
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - heading "Zaloguj się do swojego konta" [level=2] [ref=e16]
+          - paragraph [ref=e17]:
+            - text: Lub
+            - link "utwórz nowe konto" [ref=e18] [cursor=pointer]:
+              - /url: /register
+        - generic [ref=e20]:
+          - generic [ref=e21]:
+            - generic [ref=e22]:
+              - generic [ref=e23]: Adres email
+              - textbox "Adres email" [ref=e24]:
+                - /placeholder: Wprowadź swój email
+            - generic [ref=e25]:
+              - generic [ref=e26]: Hasło
+              - textbox "Hasło" [ref=e27]:
+                - /placeholder: Wprowadź swoje hasło
+            - generic [ref=e28]:
+              - generic [ref=e29]:
+                - checkbox "Zapamiętaj mnie" [ref=e30]
+                - generic [ref=e31]: Zapamiętaj mnie
+              - link "Zapomniałeś hasła?" [ref=e33] [cursor=pointer]:
+                - /url: /forgot-password
+          - button "Zaloguj się" [ref=e35]
+  - generic [ref=e38]:
+    - button "Menu" [ref=e39]:
+      - img [ref=e41]
+      - generic: Menu
+    - button "Inspect" [ref=e45]:
+      - img [ref=e47]
+      - generic: Inspect
+    - button "Audit" [ref=e49]:
+      - img [ref=e51]
+      - generic: Audit
+    - button "Settings" [ref=e54]:
+      - img [ref=e56]
+      - generic: Settings
+```

@@ -31,6 +31,12 @@ MtG Decks Builder is a web application that enables Magic: The Gathering players
 - **Shadcn/ui** - Accessible React component library
 - **Vite** - Build tool and development server
 
+### Testing
+
+- **Jest/Vitest** - Unit and integration testing
+- **Playwright** - End-to-end testing
+- **MSW (Mock Service Worker)** - API mocking for tests
+
 ### Backend
 
 - **Supabase** - Backend-as-a-Service

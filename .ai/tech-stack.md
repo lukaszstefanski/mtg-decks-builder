@@ -20,6 +20,21 @@
 - **ESLint** - linting kodu JavaScript/TypeScript
 - **Prettier** - formatowanie kodu
 
+### Narzędzia testowe
+
+- **Jest/Vitest** - testy jednostkowe i integracyjne
+  - Testowanie komponentów React
+  - Testowanie serwisów i logiki biznesowej
+  - Mockowanie zależności
+- **Playwright** - testy end-to-end
+  - Automatyzacja testów w różnych przeglądarkach
+  - Testowanie przepływów użytkownika
+  - Generowanie raportów i zrzutów ekranu
+- **MSW (Mock Service Worker)** - mockowanie API
+  - Interceptowanie i mockowanie żądań HTTP
+  - Symulacja różnych scenariuszy API
+  - Testowanie obsługi błędów
+
 ## Backend
 
 ### Baza danych i API

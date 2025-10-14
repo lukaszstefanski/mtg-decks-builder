@@ -1,0 +1,11 @@
+# Test results
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Coverage reports
+coverage/
+
+# Test artifacts
+*.log
+*.tmp
