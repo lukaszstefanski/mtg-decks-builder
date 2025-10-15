@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
+import { safeCleanupDatabase } from "./tests/e2e/teardown";
 
 // Load test environment variables
 dotenv.config({ path: path.resolve(process.cwd(), ".env.test") });
@@ -23,6 +24,8 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
+  /* Global teardown - czyszczenie bazy danych po zakończonych testach */
+  globalTeardown: "./tests/e2e/global-teardown.ts",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
