@@ -93,14 +93,22 @@ export const CreateDeckButton: React.FC<CreateDeckButtonProps> = ({ onCreateDeck
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)} disabled={disabled} className="bg-blue-600 hover:bg-blue-700 text-white">
+      <Button
+        onClick={() => setIsOpen(true)}
+        disabled={disabled}
+        className="bg-blue-600 hover:bg-blue-700 text-white"
+        data-testid="create-deck-button"
+      >
         <Plus className="h-4 w-4 mr-2" />
         Nowy deck
       </Button>
 
       {/* Modal */}
       {isOpen && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div
+          className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+          data-testid="create-deck-modal"
+        >
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div className="mt-3">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Utwórz nowy deck</h3>
@@ -121,6 +129,7 @@ export const CreateDeckButton: React.FC<CreateDeckButtonProps> = ({ onCreateDeck
                     }`}
                     placeholder="Wprowadź nazwę decka"
                     maxLength={100}
+                    data-testid="deck-name-input"
                   />
                   {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
                 </div>
@@ -137,6 +146,7 @@ export const CreateDeckButton: React.FC<CreateDeckButtonProps> = ({ onCreateDeck
                     className={`block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
                       errors.format ? "border-red-300" : "border-gray-300"
                     }`}
+                    data-testid="deck-format-select"
                   >
                     {FORMAT_OPTIONS.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -162,6 +172,7 @@ export const CreateDeckButton: React.FC<CreateDeckButtonProps> = ({ onCreateDeck
                     }`}
                     placeholder="Opcjonalny opis decka"
                     maxLength={500}
+                    data-testid="deck-description-input"
                   />
                   {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
                 </div>
@@ -174,7 +185,12 @@ export const CreateDeckButton: React.FC<CreateDeckButtonProps> = ({ onCreateDeck
                   <Button type="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
                     Anuluj
                   </Button>
-                  <Button type="submit" disabled={isSubmitting} className="bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    data-testid="submit-deck-button"
+                  >
                     {isSubmitting ? "Tworzenie..." : "Utwórz deck"}
                   </Button>
                 </div>

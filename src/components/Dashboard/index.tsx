@@ -57,7 +57,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" data-testid="dashboard">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -76,24 +76,26 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
         </div>
 
         {/* Deck List */}
-        <DeckList
-          decks={decks}
-          pagination={pagination}
-          loading={loading}
-          error={error}
-          onPageChange={() => {
-            // Handle pagination
-          }}
-          onEdit={(deckId: string) => {
-            const deck = decks.find((d) => d.id === deckId);
-            if (deck) setEditingDeck(deck);
-          }}
-          onDelete={(deckId: string) => {
-            const deck = decks.find((d) => d.id === deckId);
-            if (deck) setDeletingDeck(deck);
-          }}
-          onView={handleViewDeck}
-        />
+        <div data-testid="deck-list-container">
+          <DeckList
+            decks={decks}
+            pagination={pagination}
+            loading={loading}
+            error={error}
+            onPageChange={() => {
+              // Handle pagination
+            }}
+            onEdit={(deckId: string) => {
+              const deck = decks.find((d) => d.id === deckId);
+              if (deck) setEditingDeck(deck);
+            }}
+            onDelete={(deckId: string) => {
+              const deck = decks.find((d) => d.id === deckId);
+              if (deck) setDeletingDeck(deck);
+            }}
+            onView={handleViewDeck}
+          />
+        </div>
 
         {/* Dialogs */}
         <EditDeckDialog
