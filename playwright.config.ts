@@ -30,7 +30,7 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
-    
+
     /* Increase timeout for tests */
     actionTimeout: 30000,
     navigationTimeout: 30000,
@@ -52,6 +52,8 @@ export default defineConfig({
     env: {
       SUPABASE_URL: process.env.SUPABASE_URL!,
       SUPABASE_KEY: process.env.SUPABASE_KEY!,
+      E2E_USERNAME: process.env.E2E_USERNAME!,
+      E2E_PASSWORD: process.env.E2E_PASSWORD!,
     },
   },
 });

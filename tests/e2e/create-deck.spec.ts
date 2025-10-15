@@ -20,29 +20,38 @@ test.describe("Create Deck Flow", () => {
 
     // Login with real credentials with retry logic
     let loginAttempts = 0;
-    const maxAttempts = 3;
+    const maxAttempts = 2;
 
     while (loginAttempts < maxAttempts) {
       try {
         await loginPage.goto();
         await loginPage.login(username, password);
 
-        // Wait for dashboard to load
+        // Wait for navigation to dashboard
+        await page.waitForURL("/", { timeout: 10000 });
+
+        // Wait for dashboard to load completely
         await page.waitForLoadState("networkidle");
-        await expect(dashboardPage.heading).toBeVisible({ timeout: 15000 });
+
+        // Wait for the dashboard component to be visible
+        await page.waitForSelector('[data-testid="dashboard"]', { timeout: 10000 });
+
+        // Wait for the heading to be visible
+        await expect(dashboardPage.heading).toBeVisible({ timeout: 10000 });
         break; // Success, exit retry loop
       } catch (error) {
         loginAttempts++;
         if (loginAttempts >= maxAttempts) {
           throw error;
         }
+        // eslint-disable-next-line no-console
         console.log(`Login attempt ${loginAttempts} failed, retrying...`);
         await page.waitForTimeout(2000);
       }
     }
   });
 
-  test("should create a new deck with required fields only", async ({ page }) => {
+  test("should create a new deck with required fields only", async () => {
     // Verify dashboard is loaded (already loaded from beforeEach)
     await expect(dashboardPage.heading).toBeVisible();
     await expect(dashboardPage.createDeckButton).toBeVisible();
@@ -68,7 +77,7 @@ test.describe("Create Deck Flow", () => {
     await expect(deckElement).toBeVisible();
   });
 
-  test("should create a new deck with all fields", async ({ page }) => {
+  test("should create a new deck with all fields", async () => {
     // Click create deck button
     await dashboardPage.createNewDeck();
 
