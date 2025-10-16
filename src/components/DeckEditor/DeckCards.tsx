@@ -4,7 +4,6 @@
  */
 
 import React, { useCallback, useMemo } from "react";
-import { Button } from "@/components/ui/button";
 import { DeckCardItem } from "./DeckCardItem";
 import type { DeckCardResponse, UpdateDeckCardRequest } from "../../types";
 

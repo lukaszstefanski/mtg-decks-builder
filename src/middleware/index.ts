@@ -1,6 +1,5 @@
 import { defineMiddleware } from "astro:middleware";
 import { createServerSupabaseClient } from "../db/supabase.server";
-import type { Database } from "../db/database.types";
 
 /**
  * Middleware that adds Supabase client and user authentication to locals

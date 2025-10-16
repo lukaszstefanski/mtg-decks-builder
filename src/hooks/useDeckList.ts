@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import type { DeckResponse, DeckListResponse, PaginationInfo, FilterOptions, SortOptions } from "../types";
+import type { DeckResponse, DeckListResponse, PaginationInfo } from "../types";
 
 export interface UseDeckListParams {
   search?: string;

@@ -12,7 +12,7 @@ declare global {
         email?: string;
         created_at?: string;
         updated_at?: string;
-        [key: string]: any;
+        [key: string]: string | undefined;
       } | null;
       requestId?: string;
     }

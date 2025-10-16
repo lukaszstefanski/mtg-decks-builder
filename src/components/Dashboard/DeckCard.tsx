@@ -1,5 +1,5 @@
 import React from "react";
-import { Edit, Trash2, Eye, Calendar, Users } from "lucide-react";
+import { Calendar, Users } from "lucide-react";
 import { DeckActions } from "./DeckActions";
 import type { DeckResponse } from "../../types";
 

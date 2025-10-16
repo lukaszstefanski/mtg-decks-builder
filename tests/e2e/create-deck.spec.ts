@@ -118,7 +118,7 @@ test.describe("Create Deck Flow", () => {
     await expect(dashboardPage.createDeckModal).toBeVisible();
   });
 
-  test("should respect maxLength attribute for name field", async ({ page }) => {
+  test("should respect maxLength attribute for name field", async () => {
     // Click create deck button
     await dashboardPage.createNewDeck();
 
@@ -138,7 +138,7 @@ test.describe("Create Deck Flow", () => {
     await expect(dashboardPage.createDeckModal).not.toBeVisible();
   });
 
-  test("should respect maxLength attribute for description field", async ({ page }) => {
+  test("should respect maxLength attribute for description field", async () => {
     // Click create deck button
     await dashboardPage.createNewDeck();
 
@@ -159,7 +159,7 @@ test.describe("Create Deck Flow", () => {
     await expect(dashboardPage.createDeckModal).not.toBeVisible();
   });
 
-  test("should cancel deck creation", async ({ page }) => {
+  test("should cancel deck creation", async () => {
     // Click create deck button
     await dashboardPage.createNewDeck();
 
@@ -198,7 +198,7 @@ test.describe("Create Deck Flow", () => {
     await expect(page.getByText("Nazwa decka jest wymagana")).not.toBeVisible();
   });
 
-  test("should show loading state during deck creation", async ({ page }) => {
+  test("should show loading state during deck creation", async () => {
     // Click create deck button
     await dashboardPage.createNewDeck();
 

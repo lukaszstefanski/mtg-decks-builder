@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { loginSchema, type LoginFormData } from "../../lib/schemas/auth.schemas";

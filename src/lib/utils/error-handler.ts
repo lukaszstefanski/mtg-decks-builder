@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-extraneous-class */
+
 import type { ApiErrorResponse, ValidationErrorResponse } from "../../types";
 
 /**
@@ -96,7 +99,7 @@ export class ErrorHandler {
   /**
    * Handle Supabase errors and convert to appropriate API errors
    */
-  static handleSupabaseError(error: any, context: string): ApiError {
+  static handleSupabaseError(error: { code: string; message: string }, context: string): ApiError {
     console.error(`Supabase error in ${context}:`, error);
 
     // Handle specific Supabase error codes
@@ -128,7 +131,7 @@ export class ErrorHandler {
   /**
    * Handle Supabase Auth errors and convert to appropriate API errors
    */
-  static handleSupabaseAuthError(error: any, context: string): ApiError {
+  static handleSupabaseAuthError(error: { message: string }, context: string): ApiError {
     console.error(`Supabase Auth error in ${context}:`, error);
 
     // Handle specific Supabase Auth error messages
@@ -192,10 +195,10 @@ export class ErrorHandler {
   /**
    * Create validation error from Zod validation result
    */
-  static createValidationError(zodError: any): ValidationError {
+  static createValidationError(zodError: { issues: { path: string[]; message: string }[] }): ValidationError {
     const errors: Record<string, string[]> = {};
 
-    zodError.issues.forEach((issue: any) => {
+    zodError.issues.forEach((issue: { path: string[]; message: string }) => {
       const path = issue.path.join(".");
       if (!errors[path]) {
         errors[path] = [];
@@ -211,7 +214,7 @@ export class ErrorHandler {
  * Async error wrapper for API routes
  * Catches errors and returns appropriate HTTP responses
  */
-export function withErrorHandling<T extends any[], R>(handler: (...args: T) => Promise<Response>) {
+export function withErrorHandling<T extends any[]>(handler: (...args: T) => Promise<Response>) {
   return async (...args: T): Promise<Response> => {
     try {
       return await handler(...args);

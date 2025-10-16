@@ -59,7 +59,7 @@ export const DeckList: React.FC<DeckListProps> = ({
   }
 
   if (decks.length === 0) {
-    return <EmptyState onCreateDeck={() => {}} message="Nie znaleziono decków spełniających kryteria wyszukiwania." />;
+    return <EmptyState message="Nie znaleziono decków spełniających kryteria wyszukiwania." />;
   }
 
   return (

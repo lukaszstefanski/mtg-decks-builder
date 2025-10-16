@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import type { APIRoute } from "astro";
 import { loginSchema } from "../../../lib/schemas/auth.schemas";
 import { createServerSupabaseClient } from "../../../db/supabase.server";
@@ -61,7 +63,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     // Obsługa błędów walidacji Zod
     if (error instanceof Error && error.name === "ZodError") {
-      return ErrorHandler.createErrorResponse(new ErrorHandler().createValidationError(error as any));
+      return ErrorHandler.createErrorResponse(ErrorHandler.createValidationError(error as any));
     }
 
     // Inne błędy

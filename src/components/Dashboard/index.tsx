@@ -20,7 +20,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const [deletingDeck, setDeletingDeck] = useState<DeckResponse | null>(null);
 
   // Pobieranie danych użytkownika
-  const { userId, isAuthenticated } = useAuth(user);
+  const { userId } = useAuth(user);
 
   const { decks, loading, error, pagination, refetch } = useDeckList({
     search: searchQuery,

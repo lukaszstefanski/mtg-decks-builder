@@ -74,7 +74,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     // Obsługa błędów walidacji Zod
     if (error instanceof Error && error.name === "ZodError") {
-      return ErrorHandler.createErrorResponse(ErrorHandler.createValidationError(error as any));
+      return ErrorHandler.createErrorResponse(ErrorHandler.createValidationError(error));
     }
 
     // Inne błędy

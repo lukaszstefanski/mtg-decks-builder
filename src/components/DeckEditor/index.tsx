@@ -69,7 +69,7 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deckId, user }) => {
     };
 
     loadDeckData();
-  }, [deckId]);
+  }, [deckId, deckMetadata, deckCards]);
 
   // Obsługa dodawania karty do decka
   const handleAddCard = useCallback(

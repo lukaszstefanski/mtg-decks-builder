@@ -3,7 +3,7 @@ import { Plus, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export interface EmptyStateProps {
-  onCreateDeck: () => void;
+  onCreateDeck?: () => void;
   message?: string;
 }
 
@@ -20,11 +20,12 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       <h3 className="text-lg font-medium text-gray-900 mb-2">Brak decków</h3>
 
       <p className="text-gray-600 mb-6 max-w-md mx-auto">{message}</p>
-
-      <Button onClick={onCreateDeck} className="bg-blue-600 hover:bg-blue-700 text-white">
-        <Plus className="h-4 w-4 mr-2" />
-        Utwórz pierwszy deck
-      </Button>
+      {onCreateDeck && (
+        <Button onClick={onCreateDeck} className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Plus className="h-4 w-4 mr-2" />
+          Utwórz pierwszy deck
+        </Button>
+      )}
     </div>
   );
 };

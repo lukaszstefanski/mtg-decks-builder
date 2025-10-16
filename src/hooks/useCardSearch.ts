@@ -5,7 +5,7 @@
 
 import { useState, useCallback } from "react";
 import { scryfallService } from "../lib/services/scryfall.service";
-import type { CardSearchState, FilterState, ScryfallSearchParams, ScryfallCardResponse } from "../types";
+import type { CardSearchState, FilterState, ScryfallSearchParams } from "../types";
 
 export const useCardSearch = () => {
   const [state, setState] = useState<CardSearchState>({

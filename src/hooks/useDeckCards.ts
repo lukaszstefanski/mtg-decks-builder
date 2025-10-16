@@ -286,8 +286,7 @@ export const useDeckCards = (deckId: string) => {
     if (deckId) {
       loadCards();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deckId]);
+  }, [deckId, loadCards]);
 
   return {
     state,

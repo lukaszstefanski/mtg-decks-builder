@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * Logging utility for the application
  * Provides structured logging with different levels and contexts

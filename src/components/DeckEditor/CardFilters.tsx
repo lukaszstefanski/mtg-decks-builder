@@ -89,7 +89,7 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ filters, onChange }) =
         <div className="space-y-6 border-t pt-4">
           {/* Filtry kolorów */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">Kolory</label>
+            <span className="block text-sm font-medium text-gray-700 mb-3">Kolory</span>
             <div className="flex flex-wrap gap-2">
               {AVAILABLE_COLORS.map((color) => (
                 <label key={color.value} className="flex items-center space-x-2 cursor-pointer">
@@ -114,7 +114,7 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ filters, onChange }) =
 
           {/* Filtry typów kart */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">Typy kart</label>
+            <span className="block text-sm font-medium text-gray-700 mb-3">Typy kart</span>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {AVAILABLE_TYPES.map((type) => (
                 <label key={type} className="flex items-center space-x-2 cursor-pointer">

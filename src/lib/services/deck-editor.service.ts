@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * DeckEditorService - Serwis do komunikacji z API dla edytora decka
  * Obsługuje wszystkie operacje związane z wyszukiwaniem kart i zarządzaniem kartami w decku

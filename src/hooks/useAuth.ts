@@ -3,7 +3,7 @@
  * Pobiera dane użytkownika przekazane z serwera Astro
  */
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export interface User {
   id?: string;
@@ -19,8 +19,8 @@ export interface UseAuthReturn {
 }
 
 export const useAuth = (initialUser?: User | null): UseAuthReturn => {
-  const [user, setUser] = useState<User | null>(initialUser || null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [user] = useState<User | null>(initialUser || null);
+  const [isLoading] = useState(false);
 
   // Sprawdzanie czy użytkownik jest zalogowany
   const isAuthenticated = user !== null && user.id !== undefined;

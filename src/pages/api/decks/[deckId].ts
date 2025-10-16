@@ -5,7 +5,6 @@ import {
   DeckIdSchema,
   DeleteDeckRequestSchema,
   type UpdateDeckRequest,
-  type DeleteDeckRequest,
 } from "../../../lib/schemas/deck.schemas";
 import { ErrorHandler, withErrorHandling, AuthenticationError } from "../../../lib/utils/error-handler";
 import { logger } from "../../../lib/utils/logger";

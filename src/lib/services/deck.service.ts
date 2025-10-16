@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "../../db/database.types";
 import type {
-  CreateDeckInput,
-  UpdateDeckInput,
   DeckListQuery,
   DeckResponse,
   DeckDetailResponse,
@@ -12,7 +12,7 @@ import type {
   DeckCardResponse,
 } from "../schemas/deck.schemas";
 import type { CreateDeckCommand, UpdateDeckCommand, DeleteDeckCommand } from "../../types";
-import { ErrorHandler, NotFoundError, AuthorizationError } from "../utils/error-handler";
+import { ErrorHandler, NotFoundError } from "../utils/error-handler";
 import { logger } from "../utils/logger";
 
 /**
@@ -233,7 +233,7 @@ export class DeckService {
     }
 
     // Check if card already exists in deck
-    const { data: existingCard, error: existingError } = await this.supabase
+    const { data: existingCard } = await this.supabase
       .from("deck_cards")
       .select("id, quantity")
       .eq("deck_id", deckId)

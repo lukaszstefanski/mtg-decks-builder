@@ -78,7 +78,7 @@ export const DeckHeader: React.FC<DeckHeaderProps> = ({ deck, onUpdate }) => {
 
       setIsEditing(false);
     } catch (error) {
-      // Obsługa błędu
+      console.error("Błąd zapisywania zmian:", error);
     }
   }, [formData, validateForm, onUpdate]);
 

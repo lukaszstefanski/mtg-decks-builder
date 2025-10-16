@@ -279,7 +279,7 @@ export class CardService {
   /**
    * Transform card data from database to response format
    */
-  public transformCard(cardData: any): CardResponse {
+  public transformCard(cardData: Database["public"]["Tables"]["cards"]["Row"]): CardResponse {
     return {
       id: cardData.id,
       scryfall_id: cardData.scryfall_id,
