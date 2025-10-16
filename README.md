@@ -1,4 +1,4 @@
-# MtG Decks Builder
+# MtG Decks Builder 
 
 A comprehensive web application for Magic: The Gathering players to create, manage, and analyze their card decks. Built with modern web technologies to provide an intuitive deck building experience.
 
