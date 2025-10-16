@@ -2,7 +2,7 @@
 
 A comprehensive web application for Magic: The Gathering players to create, manage, and analyze their card decks. Built with modern web technologies to provide an intuitive deck building experience.
 
-## Project Description
+## Project Description 
 
 MtG Decks Builder is a web application that enables Magic: The Gathering players to create, manage, and analyze their card decks. The application offers an intuitive interface for card searching, deck building according to game rules, and deck statistics analysis.
 
