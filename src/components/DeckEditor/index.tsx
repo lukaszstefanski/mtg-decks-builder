@@ -1,3 +1,6 @@
+/* eslint-disable react-compiler/react-compiler */
+/* eslint-disable react-hooks/exhaustive-deps */
+
 /**
  * DeckEditor - Główny kontener widoku edytora decka
  * Zarządza stanem całego widoku i koordynuje komunikację między komponentami
@@ -69,7 +72,7 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deckId, user }) => {
     };
 
     loadDeckData();
-  }, [deckId, deckMetadata, deckCards]);
+  }, [deckId]);
 
   // Obsługa dodawania karty do decka
   const handleAddCard = useCallback(
