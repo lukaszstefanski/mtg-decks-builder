@@ -10,12 +10,7 @@ export interface DeleteDeckDialogProps {
   onCancel: () => void;
 }
 
-export const DeleteDeckDialog: React.FC<DeleteDeckDialogProps> = ({
-  deck,
-  isOpen,
-  onConfirm,
-  onCancel,
-}) => {
+export const DeleteDeckDialog: React.FC<DeleteDeckDialogProps> = ({ deck, isOpen, onConfirm, onCancel }) => {
   if (!isOpen || !deck) {
     return null;
   }
@@ -40,9 +35,7 @@ export const DeleteDeckDialog: React.FC<DeleteDeckDialogProps> = ({
               <AlertTriangle className="h-6 w-6 text-red-600" />
             </div>
             <div className="ml-3">
-              <h4 className="text-sm font-medium text-gray-900">
-                Czy na pewno chcesz usunąć ten deck?
-              </h4>
+              <h4 className="text-sm font-medium text-gray-900">Czy na pewno chcesz usunąć ten deck?</h4>
             </div>
           </div>
 
@@ -69,10 +62,7 @@ export const DeleteDeckDialog: React.FC<DeleteDeckDialogProps> = ({
           <Button variant="outline" onClick={onCancel}>
             Anuluj
           </Button>
-          <Button
-            onClick={handleConfirm}
-            className="bg-red-600 hover:bg-red-700 text-white"
-          >
+          <Button onClick={handleConfirm} className="bg-red-600 hover:bg-red-700 text-white">
             Usuń deck
           </Button>
         </div>

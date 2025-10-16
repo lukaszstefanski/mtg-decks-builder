@@ -3,10 +3,10 @@
  * Obsługuje wyświetlanie kart decka, edycję ilości i usuwanie
  */
 
-import React, { useCallback, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
-import { DeckCardItem } from './DeckCardItem';
-import type { DeckCardResponse, UpdateDeckCardRequest } from '../../types';
+import React, { useCallback, useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { DeckCardItem } from "./DeckCardItem";
+import type { DeckCardResponse, UpdateDeckCardRequest } from "../../types";
 
 export interface DeckCardsProps {
   cards: DeckCardResponse[];
@@ -16,20 +16,14 @@ export interface DeckCardsProps {
   error?: string | null;
 }
 
-export const DeckCards: React.FC<DeckCardsProps> = ({
-  cards,
-  onUpdate,
-  onRemove,
-  loading = false,
-  error = null,
-}) => {
+export const DeckCards: React.FC<DeckCardsProps> = ({ cards, onUpdate, onRemove, loading = false, error = null }) => {
   // Obliczanie statystyk decka
   const deckStats = useMemo(() => {
     const totalCards = cards.reduce((sum, card) => sum + card.quantity, 0);
     const uniqueCards = cards.length;
-    const lands = cards.filter(card => 
-      card.card.type.toLowerCase().includes('land')
-    ).reduce((sum, card) => sum + card.quantity, 0);
+    const lands = cards
+      .filter((card) => card.card.type.toLowerCase().includes("land"))
+      .reduce((sum, card) => sum + card.quantity, 0);
     const nonLands = totalCards - lands;
 
     return {
@@ -41,14 +35,20 @@ export const DeckCards: React.FC<DeckCardsProps> = ({
   }, [cards]);
 
   // Obsługa aktualizacji karty
-  const handleUpdateCard = useCallback((cardId: string, data: UpdateDeckCardRequest) => {
-    onUpdate(cardId, data);
-  }, [onUpdate]);
+  const handleUpdateCard = useCallback(
+    (cardId: string, data: UpdateDeckCardRequest) => {
+      onUpdate(cardId, data);
+    },
+    [onUpdate]
+  );
 
   // Obsługa usuwania karty
-  const handleRemoveCard = useCallback((cardId: string) => {
-    onRemove(cardId);
-  }, [onRemove]);
+  const handleRemoveCard = useCallback(
+    (cardId: string) => {
+      onRemove(cardId);
+    },
+    [onRemove]
+  );
 
   if (loading) {
     return (
@@ -77,14 +77,10 @@ export const DeckCards: React.FC<DeckCardsProps> = ({
       {/* Header z statystykami */}
       <div className="px-6 py-4 border-b">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Karty w decku
-          </h3>
-          <div className="text-sm text-gray-600">
-            {deckStats.totalCards} kart
-          </div>
+          <h3 className="text-lg font-semibold text-gray-900">Karty w decku</h3>
+          <div className="text-sm text-gray-600">{deckStats.totalCards} kart</div>
         </div>
-        
+
         {/* Statystyki decka */}
         <div className="mt-3 grid grid-cols-2 gap-4 text-sm">
           <div className="flex justify-between">
@@ -115,12 +111,7 @@ export const DeckCards: React.FC<DeckCardsProps> = ({
       ) : (
         <div className="divide-y">
           {cards.map((card) => (
-            <DeckCardItem
-              key={card.id}
-              card={card}
-              onUpdate={handleUpdateCard}
-              onRemove={handleRemoveCard}
-            />
+            <DeckCardItem key={card.id} card={card} onUpdate={handleUpdateCard} onRemove={handleRemoveCard} />
           ))}
         </div>
       )}

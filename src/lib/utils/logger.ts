@@ -7,7 +7,7 @@ export enum LogLevel {
   DEBUG = 0,
   INFO = 1,
   WARN = 2,
-  ERROR = 3
+  ERROR = 3,
 }
 
 export interface LogEntry {
@@ -70,14 +70,21 @@ class Logger {
       method,
       url,
       userId,
-      requestId
+      requestId,
     });
   }
 
   /**
    * Log API response
    */
-  logResponse(method: string, url: string, status: number, duration: number, userId?: string, requestId?: string): void {
+  logResponse(
+    method: string,
+    url: string,
+    status: number,
+    duration: number,
+    userId?: string,
+    requestId?: string
+  ): void {
     const level = status >= 400 ? LogLevel.ERROR : LogLevel.INFO;
     this.log(level, `API Response: ${method} ${url} - ${status} (${duration}ms)`, "API", {
       method,
@@ -85,7 +92,7 @@ class Logger {
       status,
       duration,
       userId,
-      requestId
+      requestId,
     });
   }
 
@@ -94,27 +101,25 @@ class Logger {
    */
   logDatabase(operation: string, table: string, duration?: number, error?: Error): void {
     const level = error ? LogLevel.ERROR : LogLevel.INFO;
-    const message = error 
-      ? `Database Error: ${operation} on ${table}`
-      : `Database Operation: ${operation} on ${table}`;
-    
+    const message = error ? `Database Error: ${operation} on ${table}` : `Database Operation: ${operation} on ${table}`;
+
     this.log(level, message, "DATABASE", {
       operation,
       table,
       duration,
-      error: error?.message
+      error: error?.message,
     });
   }
 
   /**
    * Log authentication event
    */
-  logAuth(event: string, userId?: string, success: boolean = true): void {
+  logAuth(event: string, userId?: string, success = true): void {
     const level = success ? LogLevel.INFO : LogLevel.WARN;
     this.log(level, `Auth Event: ${event}`, "AUTH", {
       event,
       userId,
-      success
+      success,
     });
   }
 
@@ -138,7 +143,7 @@ class Logger {
       level,
       message,
       context,
-      data
+      data,
     };
 
     // Format log entry based on environment
@@ -157,9 +162,9 @@ class Logger {
     const timestamp = entry.timestamp;
     const context = entry.context ? `[${entry.context}]` : "";
     const data = entry.data ? ` ${JSON.stringify(entry.data)}` : "";
-    
+
     const logMessage = `${timestamp} ${levelName} ${context} ${entry.message}${data}`;
-    
+
     switch (entry.level) {
       case LogLevel.DEBUG:
         console.debug(logMessage);
@@ -190,9 +195,7 @@ class Logger {
 }
 
 // Create singleton logger instance
-export const logger = new Logger(
-  process.env.NODE_ENV === "development" ? LogLevel.DEBUG : LogLevel.INFO
-);
+export const logger = new Logger(process.env.NODE_ENV === "development" ? LogLevel.DEBUG : LogLevel.INFO);
 
 /**
  * Request ID generator for tracing
@@ -217,7 +220,7 @@ export class PerformanceTimer {
     const duration = performance.now() - this.startTime;
     logger.debug(`Performance: ${this.context} completed`, "PERFORMANCE", {
       context: this.context,
-      duration: Math.round(duration)
+      duration: Math.round(duration),
     });
     return duration;
   }
@@ -230,21 +233,16 @@ export function createLoggingMiddleware() {
   return async (context: any, next: any) => {
     const requestId = generateRequestId();
     const timer = new PerformanceTimer(`API ${context.request.method} ${context.url.pathname}`);
-    
+
     // Add request ID to context
     context.locals.requestId = requestId;
-    
+
     // Log request
-    logger.logRequest(
-      context.request.method,
-      context.url.pathname,
-      context.locals.user?.id,
-      requestId
-    );
-    
+    logger.logRequest(context.request.method, context.url.pathname, context.locals.user?.id, requestId);
+
     try {
       const response = await next();
-      
+
       // Log response
       const duration = timer.end();
       logger.logResponse(
@@ -255,24 +253,20 @@ export function createLoggingMiddleware() {
         context.locals.user?.id,
         requestId
       );
-      
+
       return response;
     } catch (error) {
       const duration = timer.end();
-      logger.error(
-        `API Error: ${context.request.method} ${context.url.pathname}`,
-        "API",
-        {
-          method: context.request.method,
-          url: context.url.pathname,
-          status: 500,
-          duration,
-          error: error instanceof Error ? error.message : String(error),
-          userId: context.locals.user?.id,
-          requestId
-        }
-      );
-      
+      logger.error(`API Error: ${context.request.method} ${context.url.pathname}`, "API", {
+        method: context.request.method,
+        url: context.url.pathname,
+        status: 500,
+        duration,
+        error: error instanceof Error ? error.message : String(error),
+        userId: context.locals.user?.id,
+        requestId,
+      });
+
       throw error;
     }
   };

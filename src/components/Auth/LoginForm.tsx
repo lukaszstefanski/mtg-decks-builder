@@ -14,14 +14,14 @@ export function LoginForm() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-    
+
     // Clear error when user starts typing
     if (errors[name as keyof LoginFormData]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
         [name]: undefined,
       }));
@@ -37,7 +37,7 @@ export function LoginForm() {
     try {
       // Client-side validation
       const validatedData = loginSchema.parse(formData);
-      
+
       // API call to login endpoint
       const response = await fetch("/api/auth/login", {
         method: "POST",
@@ -72,24 +72,23 @@ export function LoginForm() {
 
       // Successful login
       setMessage({ type: "success", text: result.message || "Zalogowano pomyślnie!" });
-      
+
       // Redirect to home page after successful login
       setTimeout(() => {
         window.location.href = "/";
       }, 1000);
-      
     } catch (error) {
       if (error instanceof Error && error.name === "ZodError") {
         // Handle client-side validation errors
         const zodError = error as any;
         const fieldErrors: Partial<LoginFormData> = {};
-        
+
         zodError.errors?.forEach((err: any) => {
           if (err.path[0]) {
             fieldErrors[err.path[0] as keyof LoginFormData] = err.message;
           }
         });
-        
+
         setErrors(fieldErrors);
       } else {
         // Handle network or other errors
@@ -117,15 +116,11 @@ export function LoginForm() {
             value={formData.email}
             onChange={handleInputChange}
             className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm ${
-              errors.email
-                ? "border-red-300 dark:border-red-600"
-                : "border-gray-300 dark:border-gray-600"
+              errors.email ? "border-red-300 dark:border-red-600" : "border-gray-300 dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
             placeholder="Wprowadź swój email"
           />
-          {errors.email && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
-          )}
+          {errors.email && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>}
         </div>
 
         <div>
@@ -141,15 +136,11 @@ export function LoginForm() {
             value={formData.password}
             onChange={handleInputChange}
             className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm ${
-              errors.password
-                ? "border-red-300 dark:border-red-600"
-                : "border-gray-300 dark:border-gray-600"
+              errors.password ? "border-red-300 dark:border-red-600" : "border-gray-300 dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
             placeholder="Wprowadź swoje hasło"
           />
-          {errors.password && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>
-          )}
+          {errors.password && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>}
         </div>
 
         <div className="flex items-center justify-between">
@@ -189,11 +180,7 @@ export function LoginForm() {
       )}
 
       <div>
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="w-full"
-        >
+        <Button type="submit" disabled={isLoading} className="w-full">
           {isLoading ? "Logowanie..." : "Zaloguj się"}
         </Button>
       </div>

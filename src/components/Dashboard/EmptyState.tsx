@@ -16,19 +16,12 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       <div className="mx-auto h-24 w-24 text-gray-400 mb-6">
         <CreditCard className="h-full w-full" />
       </div>
-      
-      <h3 className="text-lg font-medium text-gray-900 mb-2">
-        Brak decków
-      </h3>
-      
-      <p className="text-gray-600 mb-6 max-w-md mx-auto">
-        {message}
-      </p>
-      
-      <Button
-        onClick={onCreateDeck}
-        className="bg-blue-600 hover:bg-blue-700 text-white"
-      >
+
+      <h3 className="text-lg font-medium text-gray-900 mb-2">Brak decków</h3>
+
+      <p className="text-gray-600 mb-6 max-w-md mx-auto">{message}</p>
+
+      <Button onClick={onCreateDeck} className="bg-blue-600 hover:bg-blue-700 text-white">
         <Plus className="h-4 w-4 mr-2" />
         Utwórz pierwszy deck
       </Button>

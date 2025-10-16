@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
-import type { FilterOptions, SortOptions } from '../types';
+import { useState, useCallback, useEffect } from "react";
+import type { FilterOptions, SortOptions } from "../types";
 
 export interface UseDeckFiltersParams {
   onFilterChange: (filters: FilterOptions) => void;
@@ -15,21 +15,21 @@ export interface UseDeckFiltersReturn {
   resetFilters: () => void;
 }
 
-const STORAGE_KEY = 'mtg-deck-filters';
+const STORAGE_KEY = "mtg-deck-filters";
 
-export const useDeckFilters = ({ 
-  onFilterChange, 
+export const useDeckFilters = ({
+  onFilterChange,
   onSortChange,
-  persistToLocalStorage = true 
+  persistToLocalStorage = true,
 }: UseDeckFiltersParams): UseDeckFiltersReturn => {
   const [filters, setFilters] = useState<FilterOptions>({
     format: undefined,
-    search: undefined
+    search: undefined,
   });
-  
+
   const [sort, setSort] = useState<SortOptions>({
-    field: 'created_at',
-    direction: 'desc'
+    field: "created_at",
+    direction: "desc",
   });
 
   // Load filters from localStorage on mount
@@ -47,7 +47,7 @@ export const useDeckFilters = ({
           }
         }
       } catch (error) {
-        console.warn('Failed to load filters from localStorage:', error);
+        console.warn("Failed to load filters from localStorage:", error);
       }
     }
   }, [persistToLocalStorage]);
@@ -56,38 +56,47 @@ export const useDeckFilters = ({
   useEffect(() => {
     if (persistToLocalStorage) {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          filters,
-          sort
-        }));
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({
+            filters,
+            sort,
+          })
+        );
       } catch (error) {
-        console.warn('Failed to save filters to localStorage:', error);
+        console.warn("Failed to save filters to localStorage:", error);
       }
     }
   }, [filters, sort, persistToLocalStorage]);
 
-  const handleFilterChange = useCallback((newFilters: Partial<FilterOptions>) => {
-    const updatedFilters = { ...filters, ...newFilters };
-    setFilters(updatedFilters);
-    onFilterChange(updatedFilters);
-  }, [filters, onFilterChange]);
+  const handleFilterChange = useCallback(
+    (newFilters: Partial<FilterOptions>) => {
+      const updatedFilters = { ...filters, ...newFilters };
+      setFilters(updatedFilters);
+      onFilterChange(updatedFilters);
+    },
+    [filters, onFilterChange]
+  );
 
-  const handleSortChange = useCallback((newSort: Partial<SortOptions>) => {
-    const updatedSort = { ...sort, ...newSort };
-    setSort(updatedSort);
-    onSortChange(updatedSort);
-  }, [sort, onSortChange]);
+  const handleSortChange = useCallback(
+    (newSort: Partial<SortOptions>) => {
+      const updatedSort = { ...sort, ...newSort };
+      setSort(updatedSort);
+      onSortChange(updatedSort);
+    },
+    [sort, onSortChange]
+  );
 
   const resetFilters = useCallback(() => {
     const defaultFilters: FilterOptions = {
       format: undefined,
-      search: undefined
+      search: undefined,
     };
     const defaultSort: SortOptions = {
-      field: 'created_at',
-      direction: 'desc'
+      field: "created_at",
+      direction: "desc",
     };
-    
+
     setFilters(defaultFilters);
     setSort(defaultSort);
     onFilterChange(defaultFilters);
@@ -99,6 +108,6 @@ export const useDeckFilters = ({
     sort,
     handleFilterChange,
     handleSortChange,
-    resetFilters
+    resetFilters,
   };
 };

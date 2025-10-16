@@ -32,7 +32,7 @@ export const DeckCard: React.FC<DeckCardProps> = ({ deck, onEdit, onDelete, onVi
   };
 
   return (
-    <div 
+    <div
       className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200"
       data-testid="deck-card"
       data-deck-id={deck.id}
@@ -41,7 +41,9 @@ export const DeckCard: React.FC<DeckCardProps> = ({ deck, onEdit, onDelete, onVi
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2" data-testid="deck-name">{deck.name}</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2" data-testid="deck-name">
+              {deck.name}
+            </h3>
             <div className="flex items-center space-x-2 mb-3">
               <span
                 className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${formatColor}`}

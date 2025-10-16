@@ -23,9 +23,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
     if (!error && session?.user) {
       // Pobieranie danych użytkownika z tabeli users
       const { data: userData, error: userError } = await context.locals.supabase
-        .from('users')
-        .select('id, email, username')
-        .eq('supabase_auth_id', session.user.id)
+        .from("users")
+        .select("id, email, username")
+        .eq("supabase_auth_id", session.user.id)
         .single();
 
       if (!userError && userData) {

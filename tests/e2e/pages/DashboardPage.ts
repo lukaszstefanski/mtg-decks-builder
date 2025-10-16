@@ -7,7 +7,7 @@ export class DashboardPage {
   readonly deckList: Locator;
   readonly searchInput: Locator;
   readonly filterButton: Locator;
-  
+
   // Create Deck Modal
   readonly createDeckModal: Locator;
   readonly deckNameInput: Locator;
@@ -23,7 +23,7 @@ export class DashboardPage {
     this.deckList = page.getByTestId("deck-list-container");
     this.searchInput = page.getByPlaceholder(/search decks/i);
     this.filterButton = page.getByRole("button", { name: /filter/i });
-    
+
     // Create Deck Modal
     this.createDeckModal = page.getByTestId("create-deck-modal");
     this.deckNameInput = page.getByTestId("deck-name-input");

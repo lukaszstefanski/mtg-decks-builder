@@ -44,7 +44,7 @@ test.describe("Create Deck Flow", () => {
         if (loginAttempts >= maxAttempts) {
           throw error;
         }
-        // eslint-disable-next-line no-console
+
         console.log(`Login attempt ${loginAttempts} failed, retrying...`);
         await page.waitForTimeout(2000);
       }

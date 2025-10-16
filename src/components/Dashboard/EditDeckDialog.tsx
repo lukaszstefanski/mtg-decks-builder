@@ -10,12 +10,7 @@ export interface EditDeckDialogProps {
   onCancel: () => void;
 }
 
-export const EditDeckDialog: React.FC<EditDeckDialogProps> = ({
-  deck,
-  isOpen,
-  onSave,
-  onCancel,
-}) => {
+export const EditDeckDialog: React.FC<EditDeckDialogProps> = ({ deck, isOpen, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -113,10 +108,7 @@ export const EditDeckDialog: React.FC<EditDeckDialogProps> = ({
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-gray-900">Edytuj deck</h3>
-          <button
-            onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600"
-          >
+          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -187,11 +179,7 @@ export const EditDeckDialog: React.FC<EditDeckDialogProps> = ({
             <Button type="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
               Anuluj
             </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
+            <Button type="submit" disabled={isSubmitting} className="bg-blue-600 hover:bg-blue-700 text-white">
               {isSubmitting ? "Zapisywanie..." : "Zapisz zmiany"}
             </Button>
           </div>

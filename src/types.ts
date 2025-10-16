@@ -64,7 +64,10 @@ export interface DeckListResponse {
  * Card data for deck card responses
  * Based on cards table with selected fields
  */
-export type CardData = Pick<Tables<"cards">, "id" | "scryfall_id" | "name" | "mana_cost" | "type" | "rarity" | "image_url">;
+export type CardData = Pick<
+  Tables<"cards">,
+  "id" | "scryfall_id" | "name" | "mana_cost" | "type" | "rarity" | "image_url"
+>;
 
 /**
  * Deck card response with card data
@@ -504,7 +507,20 @@ export interface ScryfallCardResponse {
 export interface ScryfallSearchParams {
   q?: string;
   format?: string;
-  order?: "name" | "set" | "released" | "rarity" | "color" | "usd" | "eur" | "tix" | "cmc" | "power" | "toughness" | "edhrec" | "penny";
+  order?:
+    | "name"
+    | "set"
+    | "released"
+    | "rarity"
+    | "color"
+    | "usd"
+    | "eur"
+    | "tix"
+    | "cmc"
+    | "power"
+    | "toughness"
+    | "edhrec"
+    | "penny";
   dir?: "asc" | "desc";
   page?: number;
 }

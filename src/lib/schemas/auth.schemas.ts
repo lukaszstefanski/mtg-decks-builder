@@ -1,10 +1,7 @@
 import { z } from "zod";
 
 export const registerSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email jest wymagany")
-    .email("Niepoprawny format emaila"),
+  email: z.string().min(1, "Email jest wymagany").email("Niepoprawny format emaila"),
   password: z
     .string()
     .min(8, "Hasło musi mieć co najmniej 8 znaków")
@@ -17,21 +14,13 @@ export const registerSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email jest wymagany")
-    .email("Niepoprawny format emaila"),
-  password: z
-    .string()
-    .min(1, "Hasło jest wymagane"),
+  email: z.string().min(1, "Email jest wymagany").email("Niepoprawny format emaila"),
+  password: z.string().min(1, "Hasło jest wymagane"),
   rememberMe: z.boolean().optional().default(false),
 });
 
 export const forgotPasswordSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email jest wymagany")
-    .email("Niepoprawny format emaila"),
+  email: z.string().min(1, "Email jest wymagany").email("Niepoprawny format emaila"),
 });
 
 export type RegisterFormData = z.infer<typeof registerSchema>;

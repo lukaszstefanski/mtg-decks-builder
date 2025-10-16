@@ -30,7 +30,7 @@ export interface ScryfallCard {
     art_crop?: string;
     border_crop?: string;
   };
-  card_faces?: Array<{
+  card_faces?: {
     name: string;
     mana_cost?: string;
     type_line: string;
@@ -43,7 +43,7 @@ export interface ScryfallCard {
       art_crop?: string;
       border_crop?: string;
     };
-  }>;
+  }[];
   legalities: {
     standard: string;
     pioneer: string;
@@ -87,7 +87,20 @@ export interface ScryfallSearchResponse {
 export interface ScryfallSearchParams {
   q?: string;
   format?: string;
-  order?: "name" | "set" | "released" | "rarity" | "color" | "usd" | "eur" | "tix" | "cmc" | "power" | "toughness" | "edhrec" | "penny";
+  order?:
+    | "name"
+    | "set"
+    | "released"
+    | "rarity"
+    | "color"
+    | "usd"
+    | "eur"
+    | "tix"
+    | "cmc"
+    | "power"
+    | "toughness"
+    | "edhrec"
+    | "penny";
   dir?: "asc" | "desc";
   page?: number;
 }
@@ -137,7 +150,7 @@ export class ScryfallService {
   async searchCards(params: ScryfallSearchParams): Promise<ScryfallSearchResult> {
     try {
       const searchParams = new URLSearchParams();
-      
+
       if (params.q) {
         searchParams.append("q", params.q);
       }
@@ -155,14 +168,14 @@ export class ScryfallService {
       }
 
       const url = `${this.baseUrl}/cards/search?${searchParams.toString()}`;
-      
+
       logger.logBusiness("Scryfall search request", "Service", { url, params });
-      
+
       // Rate limiting
       await this.delay(this.rateLimitDelay);
-      
+
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         if (response.status === 404) {
           // Brak wyników - to nie jest błąd
@@ -172,20 +185,20 @@ export class ScryfallService {
             has_more: false,
           };
         }
-        
+
         throw new Error(`Scryfall API error: ${response.status} ${response.statusText}`);
       }
-      
+
       const data: ScryfallSearchResponse = await response.json();
-      
-      const transformedCards = data.data.map(card => this.transformCard(card));
-      
+
+      const transformedCards = data.data.map((card) => this.transformCard(card));
+
       logger.logBusiness("Scryfall search completed", "Service", {
         totalCards: data.total_cards,
         returnedCards: data.data.length,
         hasMore: data.has_more,
       });
-      
+
       return {
         cards: transformedCards,
         total_cards: data.total_cards,
@@ -207,25 +220,25 @@ export class ScryfallService {
   async getCardById(scryfallId: string): Promise<TransformedCard> {
     try {
       const url = `${this.baseUrl}/cards/${scryfallId}`;
-      
+
       logger.logBusiness("Scryfall card request", "Service", { scryfallId });
-      
+
       // Rate limiting
       await this.delay(this.rateLimitDelay);
-      
+
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         throw new Error(`Scryfall API error: ${response.status} ${response.statusText}`);
       }
-      
+
       const card: ScryfallCard = await response.json();
-      
+
       logger.logBusiness("Scryfall card retrieved", "Service", {
         cardName: card.name,
         setId: card.set,
       });
-      
+
       return this.transformCard(card);
     } catch (error) {
       logger.error("Scryfall card retrieval failed", "Service", {
@@ -242,24 +255,24 @@ export class ScryfallService {
   async getRandomCard(): Promise<TransformedCard> {
     try {
       const url = `${this.baseUrl}/cards/random`;
-      
+
       logger.logBusiness("Scryfall random card request", "Service");
-      
+
       // Rate limiting
       await this.delay(this.rateLimitDelay);
-      
+
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         throw new Error(`Scryfall API error: ${response.status} ${response.statusText}`);
       }
-      
+
       const card: ScryfallCard = await response.json();
-      
+
       logger.logBusiness("Scryfall random card retrieved", "Service", {
         cardName: card.name,
       });
-      
+
       return this.transformCard(card);
     } catch (error) {
       logger.error("Scryfall random card failed", "Service", {
@@ -274,12 +287,13 @@ export class ScryfallService {
    */
   private transformCard(card: ScryfallCard): TransformedCard {
     // Wybieranie obrazu - preferujemy normal, potem large, potem small
-    const imageUrl = card.image_uris?.normal || 
-                    card.image_uris?.large || 
-                    card.image_uris?.small ||
-                    card.card_faces?.[0]?.image_uris?.normal ||
-                    card.card_faces?.[0]?.image_uris?.large ||
-                    card.card_faces?.[0]?.image_uris?.small;
+    const imageUrl =
+      card.image_uris?.normal ||
+      card.image_uris?.large ||
+      card.image_uris?.small ||
+      card.card_faces?.[0]?.image_uris?.normal ||
+      card.card_faces?.[0]?.image_uris?.large ||
+      card.card_faces?.[0]?.image_uris?.small;
 
     return {
       id: card.id,
@@ -305,7 +319,7 @@ export class ScryfallService {
    * Opóźnienie dla rate limiting
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -328,7 +342,7 @@ export class ScryfallService {
 
     // Kolory
     if (params.colors && params.colors.length > 0) {
-      const colorQuery = params.colors.map(color => `color=${color}`).join(" OR ");
+      const colorQuery = params.colors.map((color) => `color=${color}`).join(" OR ");
       queryParts.push(`(${colorQuery})`);
     }
 
@@ -344,13 +358,13 @@ export class ScryfallService {
 
     // Typy kart
     if (params.types && params.types.length > 0) {
-      const typeQuery = params.types.map(type => `type:${type}`).join(" OR ");
+      const typeQuery = params.types.map((type) => `type:${type}`).join(" OR ");
       queryParts.push(`(${typeQuery})`);
     }
 
     // Rzadkość
     if (params.rarity && params.rarity.length > 0) {
-      const rarityQuery = params.rarity.map(rarity => `rarity:${rarity}`).join(" OR ");
+      const rarityQuery = params.rarity.map((rarity) => `rarity:${rarity}`).join(" OR ");
       queryParts.push(`(${rarityQuery})`);
     }
 

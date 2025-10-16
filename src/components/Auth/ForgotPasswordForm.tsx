@@ -13,14 +13,14 @@ export function ForgotPasswordForm() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-    
+
     // Clear error when user starts typing
     if (errors[name as keyof ForgotPasswordFormData]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
         [name]: undefined,
       }));
@@ -36,7 +36,7 @@ export function ForgotPasswordForm() {
     try {
       // Client-side validation
       const validatedData = forgotPasswordSchema.parse(formData);
-      
+
       // API call to forgot-password endpoint
       const response = await fetch("/api/auth/forgot-password", {
         method: "POST",
@@ -69,29 +69,31 @@ export function ForgotPasswordForm() {
       }
 
       // Successful request
-      setMessage({ 
-        type: "success", 
-        text: result.message || "Link do resetowania hasła został wysłany na podany adres email." 
+      setMessage({
+        type: "success",
+        text: result.message || "Link do resetowania hasła został wysłany na podany adres email.",
       });
       setIsSubmitted(true);
-      
     } catch (error) {
       if (error instanceof Error && error.name === "ZodError") {
         // Handle client-side validation errors
         const zodError = error as any;
         const fieldErrors: Partial<ForgotPasswordFormData> = {};
-        
+
         zodError.errors?.forEach((err: any) => {
           if (err.path[0]) {
             fieldErrors[err.path[0] as keyof ForgotPasswordFormData] = err.message;
           }
         });
-        
+
         setErrors(fieldErrors);
       } else {
         // Handle network or other errors
         console.error("Forgot password error:", error);
-        setMessage({ type: "error", text: "Wystąpił błąd podczas wysyłania linku resetującego. Sprawdź połączenie internetowe." });
+        setMessage({
+          type: "error",
+          text: "Wystąpił błąd podczas wysyłania linku resetującego. Sprawdź połączenie internetowe.",
+        });
       }
     } finally {
       setIsLoading(false);
@@ -109,17 +111,10 @@ export function ForgotPasswordForm() {
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
-            Email wysłany!
-          </h3>
+          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Email wysłany!</h3>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Sprawdź swoją skrzynkę pocztową i kliknij link do resetowania hasła.
           </p>
@@ -137,7 +132,7 @@ export function ForgotPasswordForm() {
           >
             Wyślij ponownie
           </Button>
-          
+
           <div className="text-center">
             <a href="/login" className="text-sm text-primary hover:text-primary/80">
               Powrót do logowania
@@ -164,21 +159,15 @@ export function ForgotPasswordForm() {
             value={formData.email}
             onChange={handleInputChange}
             className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm ${
-              errors.email
-                ? "border-red-300 dark:border-red-600"
-                : "border-gray-300 dark:border-gray-600"
+              errors.email ? "border-red-300 dark:border-red-600" : "border-gray-300 dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
             placeholder="Wprowadź swój email"
           />
-          {errors.email && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
-          )}
+          {errors.email && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>}
         </div>
 
         <div className="text-sm text-gray-600 dark:text-gray-400">
-          <p>
-            Wprowadź adres email powiązany z Twoim kontem, a wyślemy Ci link do resetowania hasła.
-          </p>
+          <p>Wprowadź adres email powiązany z Twoim kontem, a wyślemy Ci link do resetowania hasła.</p>
         </div>
       </div>
 
@@ -195,14 +184,10 @@ export function ForgotPasswordForm() {
       )}
 
       <div className="space-y-4">
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="w-full"
-        >
+        <Button type="submit" disabled={isLoading} className="w-full">
           {isLoading ? "Wysyłanie..." : "Wyślij link resetujący"}
         </Button>
-        
+
         <div className="text-center">
           <a href="/login" className="text-sm text-primary hover:text-primary/80">
             Powrót do logowania

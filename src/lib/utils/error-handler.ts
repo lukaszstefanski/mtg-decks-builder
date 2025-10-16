@@ -7,7 +7,7 @@ export class ApiError extends Error {
   public readonly status: number;
   public readonly code: string;
 
-  constructor(message: string, status: number = 500, code: string = "INTERNAL_ERROR") {
+  constructor(message: string, status = 500, code = "INTERNAL_ERROR") {
     super(message);
     this.name = "ApiError";
     this.status = status;
@@ -26,28 +26,28 @@ export class ValidationError extends ApiError {
 }
 
 export class AuthenticationError extends ApiError {
-  constructor(message: string = "Authentication required") {
+  constructor(message = "Authentication required") {
     super(message, 401, "AUTHENTICATION_ERROR");
     this.name = "AuthenticationError";
   }
 }
 
 export class AuthorizationError extends ApiError {
-  constructor(message: string = "Access denied") {
+  constructor(message = "Access denied") {
     super(message, 403, "AUTHORIZATION_ERROR");
     this.name = "AuthorizationError";
   }
 }
 
 export class NotFoundError extends ApiError {
-  constructor(message: string = "Resource not found") {
+  constructor(message = "Resource not found") {
     super(message, 404, "NOT_FOUND");
     this.name = "NotFoundError";
   }
 }
 
 export class ConflictError extends ApiError {
-  constructor(message: string = "Resource conflict") {
+  constructor(message = "Resource conflict") {
     super(message, 409, "CONFLICT");
     this.name = "ConflictError";
   }
@@ -69,7 +69,7 @@ export class ErrorHandler {
       errorResponse = {
         error: error.code,
         message: error.message,
-        status: error.status
+        status: error.status,
       };
 
       // Add validation errors if it's a ValidationError
@@ -79,21 +79,18 @@ export class ErrorHandler {
     } else {
       // Log unexpected errors
       console.error("Unexpected error:", error);
-      
+
       errorResponse = {
         error: "INTERNAL_ERROR",
         message: "Wystąpił nieoczekiwany błąd serwera",
-        status: 500
+        status: 500,
       };
     }
 
-    return new Response(
-      JSON.stringify(errorResponse),
-      { 
-        status,
-        headers: { "Content-Type": "application/json" }
-      }
-    );
+    return new Response(JSON.stringify(errorResponse), {
+      status,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   /**
@@ -106,29 +103,25 @@ export class ErrorHandler {
     switch (error.code) {
       case "PGRST116":
         return new NotFoundError("Resource not found");
-      
+
       case "23505": // Unique constraint violation
         return new ConflictError("Resource already exists");
-      
+
       case "23503": // Foreign key constraint violation
         return new ValidationError("Invalid reference", {
-          reference: ["Referenced resource does not exist"]
+          reference: ["Referenced resource does not exist"],
         });
-      
+
       case "23502": // Not null constraint violation
         return new ValidationError("Required field missing", {
-          field: ["This field is required"]
+          field: ["This field is required"],
         });
-      
+
       case "42501": // Insufficient privilege
         return new AuthorizationError("Insufficient permissions");
-      
+
       default:
-        return new ApiError(
-          `Database error: ${error.message}`,
-          500,
-          "DATABASE_ERROR"
-        );
+        return new ApiError(`Database error: ${error.message}`, 500, "DATABASE_ERROR");
     }
   }
 
@@ -148,11 +141,11 @@ export class ErrorHandler {
         return new ConflictError("Użytkownik z tym adresem email już istnieje");
       } else if (error.message.includes("Password should be at least")) {
         return new ValidationError("Hasło musi mieć co najmniej 8 znaków", {
-          password: ["Hasło musi mieć co najmniej 8 znaków"]
+          password: ["Hasło musi mieć co najmniej 8 znaków"],
         });
       } else if (error.message.includes("Invalid email")) {
         return new ValidationError("Niepoprawny format emaila", {
-          email: ["Niepoprawny format emaila"]
+          email: ["Niepoprawny format emaila"],
         });
       } else if (error.message.includes("Signup is disabled")) {
         return new ApiError("Rejestracja jest obecnie wyłączona", 503, "SERVICE_UNAVAILABLE");
@@ -178,9 +171,9 @@ export class ErrorHandler {
       error: {
         name: error.name,
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
       },
-      ...additionalInfo
+      ...additionalInfo,
     };
 
     if (error instanceof ApiError && error.status >= 500) {
@@ -191,7 +184,7 @@ export class ErrorHandler {
       console.warn("Client Error:", {
         timestamp: logData.timestamp,
         context: logData.context,
-        error: logData.error.message
+        error: logData.error.message,
       });
     }
   }
@@ -201,7 +194,7 @@ export class ErrorHandler {
    */
   static createValidationError(zodError: any): ValidationError {
     const errors: Record<string, string[]> = {};
-    
+
     zodError.issues.forEach((issue: any) => {
       const path = issue.path.join(".");
       if (!errors[path]) {
@@ -218,9 +211,7 @@ export class ErrorHandler {
  * Async error wrapper for API routes
  * Catches errors and returns appropriate HTTP responses
  */
-export function withErrorHandling<T extends any[], R>(
-  handler: (...args: T) => Promise<Response>
-) {
+export function withErrorHandling<T extends any[], R>(handler: (...args: T) => Promise<Response>) {
   return async (...args: T): Promise<Response> => {
     try {
       return await handler(...args);
@@ -235,10 +226,10 @@ export function withErrorHandling<T extends any[], R>(
  * Rate limiting error
  */
 export class RateLimitError extends ApiError {
-  constructor(message: string = "Too many requests", retryAfter?: number) {
+  constructor(message = "Too many requests", retryAfter?: number) {
     super(message, 429, "RATE_LIMIT_EXCEEDED");
     this.name = "RateLimitError";
-    
+
     if (retryAfter) {
       (this as any).retryAfter = retryAfter;
     }
@@ -258,13 +249,13 @@ export function createErrorResponse(
     error,
     message,
     status,
-    ...additionalData
+    ...additionalData,
   };
 
   return new Response(JSON.stringify(errorResponse), {
     status,
     headers: {
-      'Content-Type': 'application/json'
-    }
+      "Content-Type": "application/json",
+    },
   });
 }

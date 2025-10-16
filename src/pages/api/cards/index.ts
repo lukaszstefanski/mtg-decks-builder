@@ -35,7 +35,7 @@ export const GET: APIRoute = withErrorHandling(async ({ url, locals }) => {
 
   // Get card by scryfall_id from database
   const cardService = new CardService(locals.supabase);
-  
+
   try {
     // Search for card by scryfall_id
     const { data: card, error } = await locals.supabase
@@ -54,7 +54,7 @@ export const GET: APIRoute = withErrorHandling(async ({ url, locals }) => {
           },
         });
       }
-      
+
       logger.logDatabase("select", "cards", undefined, error);
       throw ErrorHandler.handleSupabaseError(error, "getCardByScryfallId");
     }

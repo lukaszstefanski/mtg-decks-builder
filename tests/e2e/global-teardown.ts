@@ -6,7 +6,7 @@ import { safeCleanupDatabase } from "./teardown";
  */
 async function globalTeardown() {
   console.log("🔄 Uruchamianie globalnego teardown...");
-  
+
   try {
     await safeCleanupDatabase();
     console.log("✅ Globalny teardown zakończony pomyślnie");

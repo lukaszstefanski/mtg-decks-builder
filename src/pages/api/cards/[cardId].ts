@@ -8,7 +8,7 @@ export const prerender = false;
 
 /**
  * GET /api/cards/{cardId} - Get a single card by ID
- * 
+ *
  * Path parameters:
  * - cardId: UUID - The unique identifier of the card
  */
@@ -39,20 +39,20 @@ export const GET: APIRoute = withErrorHandling(async ({ params, locals }) => {
 
   return new Response(JSON.stringify(card), {
     status: 200,
-    headers: { 
+    headers: {
       "Content-Type": "application/json",
       "Cache-Control": "public, max-age=3600", // 1 hour cache for individual cards
-      "ETag": `"${card.id}-${card.created_at}"`, // ETag for cache validation
+      ETag: `"${card.id}-${card.created_at}"`, // ETag for cache validation
     },
   });
 });
 
 /**
  * PUT /api/cards/{cardId} - Update a card by ID
- * 
+ *
  * Path parameters:
  * - cardId: UUID - The unique identifier of the card
- * 
+ *
  * Request body:
  * - name: string (optional) - Card name
  * - mana_cost: string (optional) - Mana cost
@@ -95,7 +95,7 @@ export const PUT: APIRoute = withErrorHandling(async ({ params, request, locals 
 
   return new Response(JSON.stringify(card), {
     status: 200,
-    headers: { 
+    headers: {
       "Content-Type": "application/json",
       "Cache-Control": "no-cache", // Don't cache updated content
     },
@@ -104,7 +104,7 @@ export const PUT: APIRoute = withErrorHandling(async ({ params, request, locals 
 
 /**
  * DELETE /api/cards/{cardId} - Delete a card by ID
- * 
+ *
  * Path parameters:
  * - cardId: UUID - The unique identifier of the card
  */
@@ -134,7 +134,7 @@ export const DELETE: APIRoute = withErrorHandling(async ({ params, locals }) => 
 
   return new Response(null, {
     status: 204, // No Content
-    headers: { 
+    headers: {
       "Cache-Control": "no-cache",
     },
   });

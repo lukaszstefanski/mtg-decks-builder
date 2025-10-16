@@ -103,7 +103,7 @@ export class DeckService {
     const pages = Math.ceil(total / limit);
 
     return {
-      decks: (decks || []).map(deck => this.transformDeck(deck)),
+      decks: (decks || []).map((deck) => this.transformDeck(deck)),
       pagination: {
         page,
         limit,
@@ -112,7 +112,6 @@ export class DeckService {
       },
     };
   }
-
 
   /**
    * Create a new deck
@@ -410,9 +409,7 @@ export class DeckService {
     queryBuilder = queryBuilder.order(sort, { ascending: order === "asc" });
 
     // Get total count for pagination
-    let countQuery = this.supabase
-      .from("decks")
-      .select("*", { count: "exact", head: true });
+    let countQuery = this.supabase.from("decks").select("*", { count: "exact", head: true });
 
     if (search) {
       countQuery = countQuery.ilike("name", `%${search}%`);
@@ -435,7 +432,7 @@ export class DeckService {
     }
 
     return {
-      decks: (decks || []).map(deck => this.transformDeck(deck)),
+      decks: (decks || []).map((deck) => this.transformDeck(deck)),
       pagination: {
         page,
         limit,
@@ -455,7 +452,8 @@ export class DeckService {
     // Get deck with cards, filtered by user
     const { data: deckData, error: deckError } = await this.supabase
       .from("decks")
-      .select(`
+      .select(
+        `
         *,
         deck_cards (
           id,
@@ -473,7 +471,8 @@ export class DeckService {
             image_url
           )
         )
-      `)
+      `
+      )
       .eq("id", deckId)
       .eq("user_id", userId)
       .single();
@@ -512,7 +511,8 @@ export class DeckService {
     // Get deck with cards
     const { data: deckData, error: deckError } = await this.supabase
       .from("decks")
-      .select(`
+      .select(
+        `
         *,
         deck_cards (
           id,
@@ -530,7 +530,8 @@ export class DeckService {
             image_url
           )
         )
-      `)
+      `
+      )
       .eq("id", deckId)
       .single();
 
