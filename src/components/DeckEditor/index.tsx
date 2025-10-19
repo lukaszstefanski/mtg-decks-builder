@@ -168,9 +168,6 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deckId, user }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header z metadanymi decka */}
-        <DeckHeader deck={state.deck} onUpdate={handleUpdateDeck} />
-
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Lewa kolumna - Wyszukiwanie kart */}
           <div className="space-y-6">
@@ -188,6 +185,9 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deckId, user }) => {
 
           {/* Prawa kolumna - Karty w decku */}
           <div className="space-y-6">
+            {/* Header z metadanymi decka */}
+            <DeckHeader deck={state.deck} onUpdate={handleUpdateDeck} />
+
             <DeckCards cards={deckCards.state.cards} onUpdate={handleUpdateCard} onRemove={handleRemoveCard} />
           </div>
         </div>
